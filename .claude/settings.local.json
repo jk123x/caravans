@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /Users/jaykinkade/caravan/site && npm install framer-motion 2>&1)",
+      "Bash(npm run:*)",
+      "Bash(curl:*)",
+      "Bash(head:*)"
+    ]
+  }
+}
