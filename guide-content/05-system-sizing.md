@@ -4,7 +4,7 @@
 
 ---
 
-> **TL;DR: If you're buying from the shopping lists in Section 4, the sizing is already done for you. This section is a double-check for peace of mind, or for people whose setups don't fit neatly into one tier. If you trust the shopping list, skip to Section 6.**
+> **The short version: If you're buying from the shopping lists in Section 4, the sizing is already done for you. This section is a double-check for peace of mind, or for people whose setups don't fit neatly into one tier. If you trust the shopping list, skip to Section 6.**
 
 ## The Quick Sanity Check
 
@@ -91,7 +91,7 @@ If you're doing the longer sizing calculation, you need to know how much sun you
 | South Australia (Adelaide, Flinders) | 6.0-7.0 | 3.5-4.0 | 5.0-5.5 |
 | Tasmania | 5.0-5.5 | 2.5-3.0 | 3.5-4.0 |
 
-If you travel up north in winter (like most grey nomads do), you're getting excellent sun year-round. If you stay in the southeast through winter, you'll get less output — worth sizing up slightly if that's your plan.
+If you travel up north in winter (like most caravanners do), you're getting excellent sun year-round. If you stay in the southeast through winter, you'll get less output — worth sizing up slightly if that's your plan.
 
 ---
 

@@ -24,7 +24,7 @@ Dave and Sarah are tourers. Weeks on the road, mix of caravan parks and free cam
 
 **Phones and laptop during the day.** Maybe 100 watts total for a few hours. About 220 watt-hours.
 
-**Water pump, diesel heater, range hood.** These all add a bit — maybe 220 watt-hours combined.
+**Water pump, diesel heater, range hood.** These all add a bit, maybe 220 watt-hours combined.
 
 **Dave and Sarah's daily total: about 2,150 watt-hours.**
 
@@ -32,7 +32,7 @@ Then they add 25% as a buffer (things always use more than you expect): **about 
 
 That's it. No complicated formulas. Just: what do you have, how long is it on, roughly how much does it use?
 
-Your turn. Use the **Power Audit Worksheet** at the back — it lists every common caravan appliance with typical power draws so you don't have to look anything up.
+Your turn. Use the **Power Audit Worksheet** at the back. It lists every common caravan appliance with typical power draws so you don't have to look anything up.
 
 ---
 
@@ -66,7 +66,7 @@ Your daily number tells you what kind of system you need. Pick the one that fits
 
 ### Quick Note on Air Conditioning
 
-Running air con off-grid on a standard setup isn't practical — it uses more power than everything else combined. If that's a must-have, you're looking at a specialised 48V system ($10,000+) or a generator. This guide covers standard 12V setups, which is what the vast majority of caravanners use.
+Running air con off-grid on a standard setup isn't practical. It uses more power than everything else combined. If that's a must-have, you're looking at a specialised 48V system ($10,000+) or a generator. This guide covers standard 12V setups, which is what the vast majority of caravanners use.
 
 ---
 

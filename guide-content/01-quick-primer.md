@@ -32,6 +32,4 @@ You'll see the word **watt-hours** a lot in this guide. It's how we measure your
 
 It works like this: if something uses 60 watts and runs for 10 hours, that's 600 watt-hours. Your fridge uses about 60 watts and runs all day, so it uses about 1,440 watt-hours per day. Your TV uses about 40 watts and you watch it for 3 hours, so that's 120 watt-hours.
 
-You figured out your daily watt-hours number in the Power Audit (or Chapter 0 if you did that first). That number drives everything — the battery size, the amount of solar, the whole lot. If you haven't done it yet, flip to the Power Audit Worksheet now. It takes 10 minutes.
-
-Right, that's enough background. Let's get into what to buy.
+That daily watt-hours number is what drives everything — the battery size, the amount of solar, the whole lot. The next section helps you work out yours. It takes about 10 minutes.

@@ -18,7 +18,7 @@ That's what this guide is for.
 
 ## What Solar Actually Does for You (the Short Version)
 
-When you're plugged in at a caravan park, everything works. Fridge, lights, phone charger — no worries.
+When you're plugged in at a caravan park, everything works. Fridge, lights, phone charger, no worries.
 
 When you're free camping, there's no plug. Your caravan has a battery, but on its own it'll last a night, maybe two, before things start going flat.
 
@@ -53,13 +53,13 @@ Depends on how you travel. There are three rough levels:
 
 **Mid-range tourer setup: $3,000 - $5,000.** This is where most people end up. Comfortable free camping for as long as you want in decent weather. Runs the fridge, TV, laptops, and phone chargers without stress.
 
-**Full-time setup: $5,000 - $8,000+.** For people living on the road. Runs the heavy stuff too — microwave, coffee machine, hair dryer.
+**Full-time setup: $5,000 - $8,000+.** For people living on the road. Runs the heavy stuff too: microwave, coffee machine, hair dryer.
 
 Some people install it themselves, others pay someone to do it ($1,000-$3,000 for labour). Either way, the first step is the same: figuring out what you need.
 
 ## The One Thing Worth Figuring Out
 
-You don't need to learn how electricity works. The one thing worth working out is **how much power your caravan uses in a day** — because that single number tells you what size system to buy.
+You don't need to learn how electricity works. The one thing worth working out is **how much power your caravan uses in a day**. That single number tells you what size system to buy.
 
 It's really simple. Every appliance has a number on its label that tells you how much power it uses. Your fridge might say 60. Your TV might say 40. You go through what you've got and add them up. (We also have a free calculator on our website that does this for you — **[TODO: insert calculator URL]**.)
 
@@ -71,11 +71,11 @@ It's really simple. Every appliance has a number on its label that tells you how
 
 A typical touring setup (fridge, lights, TV, phone chargers, laptop) uses about **2,000 to 2,500 watt-hours per day**. Yours might be more or less depending on what you've got.
 
-If you want to figure out your exact number, use the worksheet on the next page. It lists every common caravan appliance with its typical power draw — you just tick what you have and add it up. Takes about 10 minutes.
+If you want to figure out your exact number, use the worksheet on the next page. It lists every common caravan appliance with its typical power draw. You just tick what you have and add it up. Takes about 10 minutes.
 
 ## Power Audit Worksheet
 
-*Print this page or fill it in on screen. For each appliance, multiply the watts by the hours. Don't stress about being exact — a rough estimate is plenty.*
+*Print this page or fill it in on screen. For each appliance, multiply the watts by the hours. Don't stress about being exact, a rough estimate is plenty.*
 
 | Appliance | Typical Watts | Your Hours/Day | Your Daily Total |
 |-----------|:---:|:---:|:---:|
@@ -94,7 +94,7 @@ If you want to figure out your exact number, use the worksheet on the next page.
 
 **Your total:** _______ watt-hours per day
 
-(Add about 25% to be safe — things always use a bit more than you expect.)
+(Add about 25% to be safe. Things always use a bit more than you'd think.)
 
 ### Where Do You Sit?
 
@@ -109,7 +109,7 @@ You've got your number. You know roughly what tier you're in. The next step is t
 That's what the full guide does. It takes your power number and gives you:
 
 - **A ready-to-go shopping list for your tier** — specific products, specific brands, approximate prices
-- **Brand comparisons** — which brands are worth the money and which ones to skip (we're not sponsored by anyone — this guide isn't secretly selling you a particular brand)
+- **Brand comparisons** — which brands are worth the money and which ones to skip (we're not sponsored by anyone)
 - **The mistakes that cost people $500-$2,000** — and how to avoid every one of them
 - **A sizing check** — to make sure all the pieces are the right size for each other
 

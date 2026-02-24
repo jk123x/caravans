@@ -1,6 +1,6 @@
 # Checklist: What to Tell Your Installer
 
-*Print this page and hand it to your installer. It tells them exactly what you want — so you get what you're paying for, not whatever they feel like putting in.*
+*Print this page and hand it to your installer. It tells them exactly what you want, so you get what you're paying for, not whatever they feel like putting in.*
 
 ---
 
@@ -54,13 +54,13 @@ These help you make sure you're getting a quality job.
 
 Before the installer leaves, get them to show you:
 
-☐ How to read the battery monitor — what the percentage means, what charging looks like
+☐ How to read the battery monitor: what the percentage means, what charging looks like
 
-☐ Where the main fuse or isolator is — so you can switch the system off if you ever need to
+☐ Where the main fuse or isolator is, so you can switch the system off if you ever need to
 
 ☐ How to connect the portable panel via the Anderson plug
 
-☐ That the system is currently working — solar is charging, battery level is going up
+☐ That the system is currently working: solar is charging, battery level is going up
 
 ☐ Test one of your 240V appliances through the inverter
 
@@ -68,4 +68,4 @@ Before the installer leaves, get them to show you:
 
 ---
 
-*You've done the research. This page makes sure you get exactly what you've planned for — no surprises on the invoice and no substitutions you didn't ask for.*
+*You've done the research. This page makes sure you get exactly what you've planned for. No surprises on the invoice and no substitutions you didn't ask for.*

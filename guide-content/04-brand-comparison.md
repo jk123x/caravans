@@ -4,7 +4,7 @@
 
 ---
 
-> **TL;DR: REDARC for DC-DC chargers, Victron for monitoring and charge controllers, Enerdrive for value, Renogy if you're on a tight budget. Mixing brands is totally fine and often the smartest move. Your shopping list is at the bottom of this section.**
+> **The short version: REDARC for DC-DC chargers, Victron for monitoring and charge controllers, Enerdrive for value, Renogy if you're on a tight budget. Mixing brands is totally fine and often the smartest move. Your shopping list is at the bottom of this section.**
 
 ## The Four Brands You'll See Everywhere
 
@@ -14,21 +14,21 @@ Walk into any caravan shop, ask in any Facebook group, and these four names come
 
 ### REDARC — The Safe Choice
 
-Australian-made, based in Adelaide. If someone tells you "just get REDARC" they're not wrong — especially for DC-DC chargers, where the REDARC BCDC range is basically the default. Premium price, excellent build quality, good Australian warranty support.
+Australian-made, based in Adelaide. If someone tells you "just get REDARC" they're not wrong, especially for DC-DC chargers, where the REDARC BCDC range is basically the default. Premium price, excellent build quality, good Australian warranty support.
 
 **Buy REDARC for:** DC-DC chargers. Their BCDC range is the industry standard for a reason.
-**Think twice about REDARC for:** Their monitoring/app ecosystem isn't as good as Victron's. Also pricey — if budget is tight, equivalent Enerdrive gear does the same job for less.
+**Think twice about REDARC for:** Their monitoring/app ecosystem isn't as good as Victron's. Also pricey. If budget is tight, equivalent Enerdrive gear does the same job for less.
 
 ### Victron — The Smart Choice
 
-Dutch company, been around since 1975. Makes the most flexible gear with the best app. If you like checking your battery level on your phone, seeing graphs of your power use, and getting alerts when things need attention — Victron's app is in a league of its own.
+Dutch company, been around since 1975. Makes the most flexible gear with the best app. If you like checking your battery level on your phone, seeing graphs of your power use, and getting alerts when things need attention, Victron's app is in a league of its own.
 
 **Buy Victron for:** Charge controllers, battery monitors (the SmartShunt is the go-to), and inverters. The app ties it all together.
 **Think twice about Victron for:** Requires more separate components than REDARC or Enerdrive. No all-in-one unit. More pieces for your installer to wire up.
 
 ### Enerdrive — The Value Choice
 
-Australian brand, now owned by Dometic. Sits in the sweet spot: good quality at a lower price than REDARC, with a 5-year warranty and lifetime tech support from Australian-based staff. Their eSystem pre-wired power boards are the closest thing to "plug and play" — a lot of the wiring is already done for you.
+Australian brand, now owned by Dometic. Sits in the sweet spot: good quality at a lower price than REDARC, with a 5-year warranty and lifetime tech support from Australian-based staff. Their eSystem pre-wired power boards are the closest thing to "plug and play" because a lot of the wiring is already done for you.
 
 **Buy Enerdrive for:** Batteries, inverters, and pre-wired power systems. Great if you want to keep things simple.
 **Think twice about Enerdrive for:** Narrower product range. If you want a very specific or large system, you might need to mix brands.
@@ -60,7 +60,7 @@ You don't have to buy everything from one brand. A lot of experienced caravanner
 
 - **DC-DC charger from REDARC** (because the BCDC is just that good)
 - **Charge controller and battery monitor from Victron** (because the app is the best)
-- **Panels from whoever has the best deal** (panels are panels — the differences at this level are small)
+- **Panels from whoever has the best deal** (panels are panels, the differences at this level are small)
 - **Battery from Enerdrive or Victron** (good quality, good warranty)
 
 Everything connects with standard electrical connections, not proprietary plugs. Mix and match freely.
