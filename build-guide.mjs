@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 import { randomUUID } from 'crypto';
 
 // === CONNECTION ===
-const CHANNEL = process.env.FIGMA_CHANNEL || 'ggbybgir';
+const CHANNEL = process.env.FIGMA_CHANNEL || 'ich0aklf';
 let ws, currentChannel = null;
 const pending = new Map();
 
@@ -62,6 +62,7 @@ const c = (r, g, b, a = 1) => ({ r: r / 255, g: g / 255, b: b / 255, a });
 const COL = {
   sandstone:  c(242, 237, 228),
   ghostGum:   c(217, 210, 199),
+  mutedText:  c(138, 130, 117),  // readable warm grey for secondary text (~#8A8275)
   saltbush:   c(91, 122, 94),
   deepSlate:  c(61, 79, 95),
   terracotta: c(168, 92, 59),
@@ -101,7 +102,7 @@ function wrap(text, maxChars) {
 }
 
 function cpl(fontSize, width = CW) {
-  return Math.floor(width / (fontSize * 0.55));
+  return Math.floor(width / (fontSize * 0.58));
 }
 
 // === PRIMITIVES ===
@@ -119,7 +120,7 @@ async function rect(parent, x, y, w, h, color, opts = {}) {
 }
 
 async function txt(parent, x, y, content, opts = {}) {
-  const { size = 13, family = 'Open Sans', style = 'Regular', color = COL.charcoal, spacing = 0, lineH = 0, name } = opts;
+  const { size = 15, family = 'Source Serif 4', style = 'Regular', color = COL.charcoal, spacing = 0, lineH = 0, name } = opts;
   const n = await cmd('create_text', { x, y, text: content, name: name || content.slice(0, 30) });
   await cmd('set_font_size', { nodeId: n.id, fontSize: size });
   try { await cmd('set_font_name', { nodeId: n.id, family, style }); } catch {}
@@ -159,14 +160,15 @@ async function specialHeader(p, label, title) {
 }
 
 async function fieldNote(p, x, y, w, title, bodyText) {
-  const chars = cpl(13, w - 32);
+  const chars = cpl(15, w - 40);
   const wrapped = wrap(bodyText, chars);
   const lines = wrapped.split('\n').length;
-  const h = 46 + lines * 20;
-  await rect(p, x, y, w, h, COL.parchment, { radius: 4 });
-  await rect(p, x, y + 2, 4, h - 4, COL.wattle);
-  await txt(p, x + 16, y + 12, title, { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 2 });
-  await txt(p, x + 16, y + 34, wrapped, { size: 13, lineH: 20 });
+  const h = 52 + lines * 23;
+  await rect(p, x, y, w, h, COL.white, { radius: 6 });
+  await rect(p, x, y + 2, 7, h - 4, COL.wattle);
+  await txt(p, x + 20, y + 14, title, { size: 11, style: 'SemiBold', color: COL.wattle, spacing: 2 });
+  await txt(p, x + w - 90, y + 14, 'SKIP TO THIS', { size: 8, style: 'SemiBold', color: COL.mutedText, spacing: 1 });
+  await txt(p, x + 20, y + 38, wrapped, { size: 15, lineH: 23 });
   return h;
 }
 
@@ -177,15 +179,18 @@ async function heading(p, x, y, text, opts = {}) {
 }
 
 async function body(p, x, y, text, opts = {}) {
-  const { width = CW, size = 13, color = COL.charcoal, bold = false } = opts;
+  const { width = CW, size = 15, color = COL.charcoal, bold = false } = opts;
   const wrapped = wrap(text, cpl(size, width));
   const lineH = Math.round(size * 1.54);
   await txt(p, x, y, wrapped, { size, lineH, color, style: bold ? 'SemiBold' : 'Regular' });
   return wrapped.split('\n').length * lineH;
 }
 
-async function pageNum(p, num) {
-  await txt(p, W - M, H - 35, String(num), { size: 10, color: COL.ghostGum });
+async function pageFooter(p, num) {
+  await rect(p, 0, H - 44, W, 1, { ...COL.ghostGum, a: 0.4 });
+  await txt(p, M, H - 34, 'Caravan Solar', { size: 10, family: 'Playfair Display', style: 'Regular', color: COL.mutedText });
+  await txt(p, W / 2 - 30, H - 34, 'caravansolar.au', { size: 9, color: COL.mutedText });
+  await txt(p, W - M - 10, H - 34, String(num), { size: 10, color: COL.mutedText });
 }
 
 async function progressBar(p, section) {
@@ -203,15 +208,15 @@ async function progressBar(p, section) {
 }
 
 async function checkbox(p, x, y, label, opts = {}) {
-  const { width = CW - 30, size = 13 } = opts;
+  const { width = CW - 30, size = 14 } = opts;
   await rect(p, x, y + 1, 16, 16, COL.white, { stroke: COL.ghostGum, strokeW: 1.5, radius: 2 });
   const wrapped = wrap(label, cpl(size, width));
-  await txt(p, x + 26, y, wrapped, { size, lineH: 20 });
-  return Math.max(20, wrapped.split('\n').length * 20) + 8;
+  await txt(p, x + 26, y, wrapped, { size, lineH: 22 });
+  return Math.max(22, wrapped.split('\n').length * 22) + 8;
 }
 
 async function zebraTable(p, x, y, config) {
-  const { cols, rows, width = CW, rowH = 28, headerH = 34, fontSize = 11,
+  const { cols, rows, width = CW, rowH = 30, headerH = 36, fontSize = 12,
     headerBg = COL.deepSlate, headerColor = COL.white } = config;
   const colX = [];
   let cx = x;
@@ -233,7 +238,7 @@ async function zebraTable(p, x, y, config) {
 }
 
 async function tierColorTable(p, x, y, config) {
-  const { labelCol, tierCols, rows, width = CW, rowH = 28, headerH = 34, fontSize = 11 } = config;
+  const { labelCol, tierCols, rows, width = CW, rowH = 30, headerH = 36, fontSize = 12 } = config;
   const lw = labelCol.w * width;
   const tw = ((width - lw) / tierCols.length);
   let cy = y;
@@ -256,8 +261,8 @@ async function tierColorTable(p, x, y, config) {
 }
 
 async function tierBadge(p, x, y, name, color) {
-  await rect(p, x, y, 120, 32, { ...color, a: 0.12 }, { radius: 5, stroke: color });
-  await txt(p, x + 14, y + 8, name, { size: 13, style: 'SemiBold', color });
+  await rect(p, x, y, 130, 36, { ...color, a: 0.12 }, { radius: 5, stroke: color });
+  await txt(p, x + 16, y + 9, name, { size: 14, style: 'SemiBold', color });
 }
 
 async function divider(p, y, opts = {}) {
@@ -268,23 +273,30 @@ async function divider(p, y, opts = {}) {
 
 async function numberedItem(p, x, y, num, text, opts = {}) {
   const { width = CW - 30 } = opts;
-  await txt(p, x, y, `${num}.`, { size: 13, style: 'SemiBold', color: COL.wattle });
+  await txt(p, x, y, `${num}.`, { size: 15, style: 'SemiBold', color: COL.wattle });
   const h = await body(p, x + 22, y, text, { width });
-  return Math.max(h, 20) + 6;
+  return Math.max(h, 23) + 6;
 }
 
 async function bulletItem(p, x, y, text, opts = {}) {
   const { width = CW - 20, bold = false } = opts;
-  await txt(p, x, y + 1, '\u2022', { size: 14, color: COL.wattle });
+  await txt(p, x, y + 1, '\u2022', { size: 16, color: COL.wattle });
   const h = await body(p, x + 16, y, text, { width, bold });
-  return Math.max(h, 20) + 4;
+  return Math.max(h, 23) + 4;
 }
 
 async function costCallout(p, x, y, title, cost, description) {
-  const h1 = await body(p, x, y, title, { bold: true, size: 14 });
-  await txt(p, x + CW - 120, y, cost, { size: 12, style: 'SemiBold', color: COL.terracotta });
-  const h2 = await body(p, x, y + h1 + 2, description);
-  return h1 + h2 + 14;
+  const descChars = cpl(14, CW - 36);
+  const wrappedDesc = wrap(description, descChars);
+  const descLines = wrappedDesc.split('\n').length;
+  const cardH = 70 + descLines * 22;
+  await rect(p, x, y, CW, cardH, COL.white, { radius: 8 });
+  // cost badge
+  await rect(p, x + CW - 140, y + 10, 128, 26, { ...COL.terracotta, a: 0.12 }, { radius: 4 });
+  await txt(p, x + CW - 132, y + 15, cost, { size: 13, style: 'SemiBold', color: COL.terracotta });
+  await txt(p, x + 16, y + 14, title, { size: 15, style: 'SemiBold', color: COL.deepSlate });
+  await txt(p, x + 16, y + 44, wrappedDesc, { size: 14, lineH: 22, color: COL.charcoal });
+  return cardH + 10;
 }
 
 // =================================================================
@@ -298,52 +310,64 @@ async function buildCover(pi) {
   // Top accent bar
   await rect(f.id, 0, 0, W, 5, COL.wattle);
 
+  // Warm gradient wash at top
+  await rect(f.id, 0, 5, W, 180, { ...COL.wattle, a: 0.06 });
+
   // Label
-  await rect(f.id, M, 90, 50, 3, COL.wattle);
-  await txt(f.id, M, 108, "THE BEGINNER'S GUIDE TO", { size: 12, style: 'SemiBold', color: COL.wattle, spacing: 3 });
+  await rect(f.id, M, 70, 50, 3, COL.wattle);
+  await txt(f.id, M, 88, "THE BEGINNER'S GUIDE TO", { size: 13, style: 'SemiBold', color: COL.wattle, spacing: 3 });
 
   // Title
-  await txt(f.id, M, 140, 'Caravan\nSolar', {
-    size: 72, family: 'Playfair Display', style: 'Bold', color: COL.white, lineH: 82, name: 'Title'
+  await txt(f.id, M, 120, 'Caravan\nSolar', {
+    size: 78, family: 'Playfair Display', style: 'Bold', color: COL.white, lineH: 88, name: 'Title'
   });
 
   // Decorative line
-  await rect(f.id, M, 320, 60, 2, { ...COL.wattle, a: 0.4 });
+  await rect(f.id, M, 310, 80, 3, COL.wattle);
 
   // Subtitle
-  await txt(f.id, M, 340, wrap(
-    "Clear recommendations, brand comparisons, and shopping lists for Australian caravanners who don't want to become electrical engineers.", 50
-  ), { size: 15, color: { ...COL.white, a: 0.65 }, lineH: 24, name: 'Subtitle' });
+  await txt(f.id, M, 330, wrap(
+    "Clear recommendations, brand comparisons, and shopping lists for Australian caravanners who don't want to become electrical engineers.", 48
+  ), { size: 16, color: { ...COL.white, a: 0.7 }, lineH: 26, name: 'Subtitle' });
 
-  // Landscape bands
-  const bandY = 480;
-  await rect(f.id, 0, bandY, W, 12, COL.skyBlue);
-  await rect(f.id, 0, bandY + 12, W, 12, COL.saltbush);
-  await rect(f.id, 0, bandY + 24, W, 12, COL.terracotta);
+  // Warm landscape section
+  const bandY = 460;
+  // Graduated warm bands (sunrise feel)
+  await rect(f.id, 0, bandY, W, 6, { ...COL.wattle, a: 0.5 });
+  await rect(f.id, 0, bandY + 6, W, 6, { ...COL.wattle, a: 0.3 });
+  await rect(f.id, 0, bandY + 12, W, 8, COL.terracotta);
+  await rect(f.id, 0, bandY + 20, W, 6, { ...COL.terracotta, a: 0.5 });
 
   // Lower section - sandstone
-  await rect(f.id, 0, bandY + 36, W, H - bandY - 36, COL.sandstone);
+  await rect(f.id, 0, bandY + 26, W, H - bandY - 26, COL.sandstone);
 
-  // Sun motif
-  const sun = await cmd('create_ellipse', { x: M, y: bandY + 60, width: 50, height: 50, name: 'Sun' });
-  await fill(sun.id, { ...COL.wattle, a: 0.15 });
-  try { await cmd('set_stroke_color', { nodeId: sun.id, color: COL.wattle, strokeWeight: 1.5 }); } catch {}
-  await cmd('insert_child', { parentId: f.id, childId: sun.id });
+  // "What's inside" summary
+  await txt(f.id, M, bandY + 50, "WHAT'S INSIDE", { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 3 });
+  const insideItems = [
+    'Your power audit in 10 minutes',
+    'Exactly what to buy, component by component',
+    'Brand comparisons (REDARC, Victron, Enerdrive, Renogy)',
+    'Ready-to-use shopping lists for your tier',
+    'Printable checklists and worksheets',
+  ];
+  let insideY = bandY + 70;
+  for (const item of insideItems) {
+    await txt(f.id, M + 2, insideY, '\u2022', { size: 12, color: COL.wattle });
+    await txt(f.id, M + 16, insideY, item, { size: 13, color: COL.deepSlate });
+    insideY += 22;
+  }
 
-  await txt(f.id, M + 65, bandY + 68, wrap("Sized for how you travel. Weekender, Tourer, or Full-timer.", 40), {
-    size: 14, family: 'Playfair Display', style: 'Regular', color: COL.deepSlate, lineH: 22
-  });
-
-  // Tier badges
-  const tierY = bandY + 140;
-  await tierBadge(f.id, M, tierY, 'Weekender', TIER.weekender);
-  await tierBadge(f.id, M + 145, tierY, 'Tourer', TIER.tourer);
-  await tierBadge(f.id, M + 290, tierY, 'Full-timer', TIER.fulltimer);
+  // Tier badges - more prominent
+  const tierY = insideY + 20;
+  await txt(f.id, M, tierY - 4, 'Sized for how you travel:', { size: 12, style: 'SemiBold', color: COL.mutedText });
+  await tierBadge(f.id, M, tierY + 18, 'Weekender', TIER.weekender);
+  await tierBadge(f.id, M + 155, tierY + 18, 'Tourer', TIER.tourer);
+  await tierBadge(f.id, M + 310, tierY + 18, 'Full-timer', TIER.fulltimer);
 
   // Footer
-  await rect(f.id, 0, H - 60, W, 60, { ...COL.black, a: 0.08 });
-  await txt(f.id, M, H - 42, 'PDF GUIDE + WORKSHEETS', { size: 10, style: 'SemiBold', color: COL.ghostGum, spacing: 2 });
-  await txt(f.id, W - M - 50, H - 46, '$49', { size: 24, family: 'Playfair Display', style: 'Bold', color: COL.wattle });
+  await rect(f.id, 0, H - 50, W, 50, { ...COL.deepSlate, a: 0.08 });
+  await txt(f.id, M, H - 34, 'caravansolar.au', { size: 11, color: COL.mutedText });
+  await txt(f.id, W - M - 130, H - 34, 'PDF GUIDE + WORKSHEETS', { size: 10, style: 'SemiBold', color: COL.mutedText, spacing: 2 });
 }
 
 async function buildTOC(pi) {
@@ -373,15 +397,15 @@ async function buildTOC(pi) {
     }
     const tx = e.n ? M + 50 : M;
     await txt(f.id, tx, y + (e.n ? 4 : 0), e.t, { size: 17, family: 'Playfair Display', style: 'Bold', color: COL.deepSlate });
-    await txt(f.id, tx, y + 26, e.d, { size: 12, color: COL.ghostGum });
+    await txt(f.id, tx, y + 26, e.d, { size: 13, color: COL.mutedText });
     y += 68;
     if (e.n) await rect(f.id, M, y - 10, CW, 1, { ...COL.ghostGum, a: 0.5 });
   }
 
   // "Short version" explainer box
-  const bxY = H - 170;
-  const nh = await fieldNote(f.id, M, bxY, CW, 'THE SHORT VERSION',
-    "Every section has a callout box like this one. If you just want to know what to buy, read only these boxes and you'll have your answer in about 5 minutes."
+  const bxY = H - 180;
+  const nh = await fieldNote(f.id, M, bxY, CW, 'LOOK FOR THESE BOXES',
+    "Every section has a callout box like this one. Read only these boxes and you'll have your answer in about 5 minutes."
   );
 }
 
@@ -391,36 +415,36 @@ async function buildS1(pi) {
   let y = await sectionHeader(f.id, 1, 'The 60-Second Version');
 
   y += await fieldNote(f.id, M, y, CW, 'SKIP THIS IF YOU WANT',
-    "If you just want the \"what to buy\" part, go straight to Section 3. But if you want the 60-second version of what you're putting in your caravan, here it is."
+    "Just want the \"what to buy\" part? Go straight to Section 3. Otherwise, here's the 60-second version."
   );
-  y += 12;
+  y += 8;
 
   y += await heading(f.id, M, y, 'The Whole System in Plain English');
-  y += 4;
+  y += 2;
 
   const parts = [
     'Solar panels sit on your roof and turn sunlight into power.',
     'A battery stores that power. This is the fuel tank.',
-    'A charge controller sits between panels and battery to manage charging safely.',
+    'A charge controller manages charging safely.',
     'A DC-DC charger tops up the battery from your car while you drive.',
-    'An inverter lets you plug in normal household things (laptop, microwave).',
-    'A battery monitor is your fuel gauge. It tells you how much power is left.',
+    'An inverter lets you plug in normal 240V things (laptop, microwave).',
+    'A battery monitor is your fuel gauge.',
   ];
   for (let i = 0; i < parts.length; i++) {
     y += await numberedItem(f.id, M, y, i + 1, parts[i]);
   }
 
-  y += 6;
+  y += 4;
   y += await body(f.id, M, y, "That's it. Six things. The rest of this guide tells you exactly which ones to buy and what size.", { bold: true });
-  y += 12;
+  y += 8;
 
   y += await heading(f.id, M, y, 'One Quick Concept');
-  y += 4;
-  y += await body(f.id, M, y, "You'll see the word watt-hours a lot. It's how we measure daily power use. If something uses 60 watts and runs for 10 hours, that's 600 watt-hours. Your fridge uses about 60W and runs all day, so roughly 1,440 Wh per day.");
-  y += 8;
-  y += await body(f.id, M, y, "That daily number drives everything. The battery size, the amount of solar, the whole lot. Section 2 helps you work out yours. It takes about 10 minutes.");
+  y += 2;
+  y += await body(f.id, M, y, "Watt-hours measure daily power use. If something uses 60 watts for 10 hours, that's 600 Wh. Your fridge uses about 60W all day: roughly 1,440 Wh.");
+  y += 6;
+  y += await body(f.id, M, y, "That daily number drives everything: battery size, solar, the lot. Section 2 helps you work out yours in about 10 minutes.");
 
-  await pageNum(f.id, 1);
+  await pageFooter(f.id, 1);
   await progressBar(f.id, 0);
 }
 
@@ -429,15 +453,15 @@ async function buildS2p1(pi) {
   const f = await makePage('S2 - Power Audit', pi);
   let y = await sectionHeader(f.id, 2, 'Your Power Audit');
 
-  y += await body(f.id, M, y, "We need to figure out roughly how much power your caravan uses in a day. This takes about 10 minutes, and it's the one piece of homework in this entire guide. Everything else flows from it.");
+  y += await body(f.id, M, y, "We need to figure out roughly how much power your caravan uses in a day. Takes about 10 minutes, and it's the one piece of homework in this guide. Everything else flows from it.");
   y += 4;
   y += await body(f.id, M, y, "Don't stress about being exact. Within 20% is plenty. We add a buffer for the stuff you forget.");
-  y += 14;
+  y += 10;
 
   y += await heading(f.id, M, y, "Walk-Through: Dave and Sarah's Setup");
-  y += 4;
-  y += await body(f.id, M, y, "Dave and Sarah are tourers. Weeks on the road, mix of caravan parks and free camping. Here's their typical day off-grid:");
-  y += 10;
+  y += 2;
+  y += await body(f.id, M, y, "Dave and Sarah are tourers. Weeks on the road, mix of parks and free camping. Here's their typical day off-grid:");
+  y += 8;
 
   const items = [
     ['Fridge (all day, all night)', '60W x 24h', '~1,440 Wh'],
@@ -458,7 +482,7 @@ async function buildS2p1(pi) {
   y += 8;
   y += await body(f.id, M, y, "Your turn. Use the Power Audit Worksheet at the back. It lists every common caravan appliance with typical power draws.");
 
-  await pageNum(f.id, 2);
+  await pageFooter(f.id, 2);
   await progressBar(f.id, 1);
 }
 
@@ -469,8 +493,8 @@ async function buildS2p2(pi) {
 
   y += await heading(f.id, M, y, 'Which Tier Are You?');
   y += 4;
-  y += await body(f.id, M, y, "Your daily number tells you what kind of system you need. Pick the one that fits:");
-  y += 14;
+  y += await body(f.id, M, y, "Your daily number tells you what kind of system you need:");
+  y += 10;
 
   // Weekender
   await rect(f.id, M, y, CW, 90, { ...TIER.weekender, a: 0.08 }, { radius: 6, stroke: TIER.weekender });
@@ -498,13 +522,13 @@ async function buildS2p2(pi) {
 
   // Air con note
   y += await fieldNote(f.id, M, y, CW, 'A NOTE ON AIR CONDITIONING',
-    "Running air con off-grid on a standard setup isn't practical. It uses more power than everything else combined. If that's a must-have, you're looking at a specialised 48V system ($10,000+) or a generator. This guide covers standard 12V setups."
+    "Air con off-grid isn't practical on a standard setup. If it's a must-have, you need a 48V system ($10,000+) or a generator. This guide covers standard 12V setups."
   );
-  y += 14;
+  y += 10;
 
   y += await body(f.id, M, y, "Got your number? Good. From here on, the guide is built around your tier. Every recommendation, every shopping list is matched to Weekender, Tourer, or Full-timer.", { bold: true });
 
-  await pageNum(f.id, 3);
+  await pageFooter(f.id, 3);
   await progressBar(f.id, 1);
 }
 
@@ -513,22 +537,22 @@ async function buildS3p1(pi) {
   const f = await makePage('S3 - Battery', pi);
   let y = await sectionHeader(f.id, 3, 'What to Buy');
 
-  y += await body(f.id, M, y, "Each component gets a quick answer at the top. Trust us? Read the callout boxes and move on. The explanation is there if you want it.");
-  y += 14;
+  y += await body(f.id, M, y, "Each component gets a quick answer at the top. Trust us? Read the callout boxes and move on.");
+  y += 10;
 
   y += await heading(f.id, M, y, 'Battery');
-  y += 4;
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "Buy lithium. Not AGM, not gel. Lithium. It costs more upfront but lasts years longer and gives way more usable power. A 200Ah lithium battery is the sweet spot for most people."
+  y += 2;
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "Buy lithium. Not AGM, not gel. Lithium. Costs more upfront but lasts years longer and gives way more usable power. 200Ah lithium is the sweet spot for most people."
   );
-  y += 12;
-
-  y += await body(f.id, M, y, "The battery is your fuel tank. An AGM \"200Ah\" battery only gives about 100Ah usable. A lithium \"200Ah\" gives 160-200Ah usable. You'd need two AGMs to match one lithium, and they weigh twice as much and last 3-5 years vs 10+.");
   y += 8;
-  y += await body(f.id, M, y, "The most common beginner mistake is buying AGM now and upgrading to lithium a year later. That's $400-$800 in the bin. Buy lithium from the start.", { bold: true });
-  y += 12;
 
-  await txt(f.id, M, y, 'What to buy by tier:', { size: 13, style: 'SemiBold', color: COL.deepSlate });
+  y += await body(f.id, M, y, "An AGM \"200Ah\" battery only gives about 100Ah usable. A lithium \"200Ah\" gives 160-200Ah usable. You'd need two AGMs to match one lithium, and they weigh twice as much and last 3-5 years vs 10+.");
+  y += 6;
+  y += await body(f.id, M, y, "The most common beginner mistake is buying AGM now and upgrading to lithium a year later. That's $400-$800 in the bin.", { bold: true });
+  y += 10;
+
+  await txt(f.id, M, y, 'What to buy by tier:', { size: 14, style: 'SemiBold', color: COL.deepSlate });
   y += 22;
   y += await bulletItem(f.id, M, y, 'Weekender: 100-200Ah lithium');
   y += await bulletItem(f.id, M, y, 'Tourer: 200Ah lithium (one battery does the job)');
@@ -536,7 +560,7 @@ async function buildS3p1(pi) {
   y += 4;
   y += await body(f.id, M, y, "Make sure it has a built-in BMS (Battery Management System). All the brands we recommend include one.", { size: 12 });
 
-  await pageNum(f.id, 4);
+  await pageFooter(f.id, 4);
   await progressBar(f.id, 2);
 }
 
@@ -546,37 +570,37 @@ async function buildS3p2(pi) {
   let y = await contHeader(f.id, 'What to Buy');
 
   y += await heading(f.id, M, y, 'Solar Panels');
-  y += 4;
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "Get fixed panels on the roof PLUS a portable folding panel. Roof panels do daily work; the portable is backup for shade. Go monocrystalline."
+  y += 2;
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "Fixed panels on the roof PLUS a portable folding panel. Roof panels do daily work; portable is for shade. Go monocrystalline."
   );
-  y += 10;
-  y += await body(f.id, M, y, "Fixed panels bolt to your roof and work all day. Portable panels fold out at camp, angle toward the sun, and avoid shade. Most people get both.");
-  y += 6;
-  y += await body(f.id, M, y, "A \"400W\" panel produces about 200-280W in real conditions. That's normal. This guide's sizing already accounts for it.");
   y += 8;
-  await txt(f.id, M, y, 'By tier:', { size: 13, style: 'SemiBold', color: COL.deepSlate });
+  y += await body(f.id, M, y, "Fixed panels bolt to your roof and work all day. Portable panels fold out at camp and angle toward the sun. Most people get both.");
+  y += 4;
+  y += await body(f.id, M, y, "A \"400W\" panel produces 200-280W in real conditions. This guide's sizing accounts for that.");
+  y += 6;
+  await txt(f.id, M, y, 'By tier:', { size: 14, style: 'SemiBold', color: COL.deepSlate });
   y += 20;
   y += await bulletItem(f.id, M, y, 'Weekender: 200W fixed');
   y += await bulletItem(f.id, M, y, 'Tourer: 300-400W fixed + 160-200W portable');
   y += await bulletItem(f.id, M, y, 'Full-timer: 400-600W fixed + 200W+ portable');
-  y += 10;
+  y += 8;
 
   y += await divider(f.id, y);
 
   y += await heading(f.id, M, y, 'Charge Controller');
-  y += 4;
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "Weekender with under 200W solar: PWM is fine. Everyone else: get MPPT. It squeezes 15-30% more power. Size it at about 1/3 of your solar wattage in amps."
+  y += 2;
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "Under 200W solar: PWM is fine. Everyone else: get MPPT. It squeezes 15-30% more power. Size at about 1/3 of your solar wattage in amps."
   );
-  y += 8;
-  await txt(f.id, M, y, 'By tier:', { size: 13, style: 'SemiBold', color: COL.deepSlate });
+  y += 6;
+  await txt(f.id, M, y, 'By tier:', { size: 14, style: 'SemiBold', color: COL.deepSlate });
   y += 20;
   y += await bulletItem(f.id, M, y, 'Weekender: 20A PWM or MPPT');
   y += await bulletItem(f.id, M, y, 'Tourer: 30-40A MPPT');
   y += await bulletItem(f.id, M, y, 'Full-timer: 40-50A MPPT');
 
-  await pageNum(f.id, 5);
+  await pageFooter(f.id, 5);
   await progressBar(f.id, 2);
 }
 
@@ -586,33 +610,33 @@ async function buildS3p3(pi) {
   let y = await contHeader(f.id, 'What to Buy');
 
   y += await heading(f.id, M, y, 'DC-DC Charger');
-  y += 4;
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
+  y += 2;
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
     "Charges your battery from the car while you drive. Not optional. A few hours of driving puts a big chunk back in. Buy a REDARC BCDC."
   );
-  y += 10;
-  y += await body(f.id, M, y, "Modern cars have smart alternators that don't work with a direct battery connection. A DC-DC charger sorts this out. A 40A unit gives you 120-160Ah on a 3-4 hour drive.");
   y += 8;
-  await txt(f.id, M, y, 'By tier:', { size: 13, style: 'SemiBold', color: COL.deepSlate });
+  y += await body(f.id, M, y, "Modern cars have smart alternators that don't work with a direct connection. A DC-DC charger sorts this out. A 40A unit gives 120-160Ah on a 3-4 hour drive.");
+  y += 6;
+  await txt(f.id, M, y, 'By tier:', { size: 14, style: 'SemiBold', color: COL.deepSlate });
   y += 20;
   y += await bulletItem(f.id, M, y, 'Weekender: 20A DC-DC charger');
   y += await bulletItem(f.id, M, y, 'Tourer: 40A DC-DC charger');
   y += await bulletItem(f.id, M, y, 'Full-timer: 40-60A DC-DC charger');
-  y += 10;
+  y += 8;
 
   y += await divider(f.id, y);
 
   y += await heading(f.id, M, y, 'Inverter');
-  y += 4;
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "Get a pure sine wave inverter. NEVER buy modified sine wave. Size it for your biggest appliance. Weekender: 1000W. Tourer: 2000W. Full-timer: 3000W."
+  y += 2;
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "Pure sine wave inverter. NEVER modified sine wave. Size for your biggest appliance. Weekender: 1000W. Tourer: 2000W. Full-timer: 3000W."
   );
-  y += 10;
-  y += await body(f.id, M, y, "Your battery is 12V. Your appliances need 240V. The inverter converts it. Always buy pure sine wave. Modified sine wave saves $50-$100 but produces rough power that damages laptops and chargers.");
   y += 8;
-  y += await body(f.id, M, y, "How big? Think about the biggest single appliance: just phones and laptops = 1000W. Microwave = 2000W. Hair dryer = 3000W.");
+  y += await body(f.id, M, y, "Your battery is 12V, appliances need 240V. The inverter converts it. Always pure sine wave. Modified sine wave saves $50-$100 but damages laptops and chargers.");
+  y += 6;
+  y += await body(f.id, M, y, "How big? Biggest single appliance: phones and laptops = 1000W. Microwave = 2000W. Hair dryer = 3000W.");
 
-  await pageNum(f.id, 6);
+  await pageFooter(f.id, 6);
   await progressBar(f.id, 2);
 }
 
@@ -622,20 +646,20 @@ async function buildS3p4(pi) {
   let y = await contHeader(f.id, 'What to Buy');
 
   y += await heading(f.id, M, y, 'Battery Monitor');
-  y += 4;
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "Buy a Victron SmartShunt ($130-$160). Shows your battery level on your phone via Bluetooth. Without a monitor, you're driving without a fuel gauge."
+  y += 2;
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "Buy a Victron SmartShunt ($130-$160). Shows battery level on your phone via Bluetooth. Without a monitor, you're driving without a fuel gauge."
   );
+  y += 8;
+  y += await body(f.id, M, y, "It shows exactly what percentage you're at, how fast you're using power, and how long until full. Without it you'll wear out the battery without realising.");
   y += 10;
-  y += await body(f.id, M, y, "It tells you exactly what percentage you're at, how fast you're using power, and how long until full. Check your battery level from bed. Without it you'll wear out the battery without realising.");
-  y += 16;
 
   y += await divider(f.id, y);
 
   y += await heading(f.id, M, y, 'Your Complete System at a Glance');
-  y += 4;
+  y += 2;
   y += await body(f.id, M, y, "All six components. Find your tier:");
-  y += 10;
+  y += 8;
 
   y += await tierColorTable(f.id, M, y, {
     labelCol: { label: 'Component', w: 0.28 },
@@ -657,7 +681,7 @@ async function buildS3p4(pi) {
   y += 16;
   y += await body(f.id, M, y, "That's your whole setup. Six things, sized for how you travel. Next section turns this into a shopping list with specific brands and prices.", { bold: true });
 
-  await pageNum(f.id, 7);
+  await pageFooter(f.id, 7);
   await progressBar(f.id, 2);
 }
 
@@ -666,29 +690,29 @@ async function buildS4p1(pi) {
   const f = await makePage('S4 - Brands', pi);
   let y = await sectionHeader(f.id, 4, 'Which Brands to Buy');
 
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "REDARC for DC-DC chargers. Victron for monitoring. Enerdrive for value. Renogy if budget is tight. Mixing brands is fine and often the smartest move."
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "REDARC for DC-DC chargers. Victron for monitoring. Enerdrive for value. Renogy if budget is tight. Mixing brands is fine."
   );
+  y += 8;
+  y += await body(f.id, M, y, "This guide isn't sponsored by or affiliated with any brand. Genuine recommendations based on what holds up.", { size: 13, bold: true });
   y += 10;
-  y += await body(f.id, M, y, "This guide isn't sponsored by or affiliated with any brand. These are genuine recommendations based on what holds up.", { size: 12, bold: true });
-  y += 14;
 
   y += await heading(f.id, M, y, 'REDARC', { size: 17 });
   y += 2;
   await txt(f.id, M + CW - 80, y - 22, 'The Safe Choice', { size: 11, style: 'SemiBold', color: COL.wattle });
   y += await body(f.id, M, y, "Australian-made, based in Adelaide. Premium price, excellent build quality. Their BCDC DC-DC charger range is the industry standard.");
   y += 4;
-  y += await body(f.id, M, y, "Buy REDARC for: DC-DC chargers. Think twice for: monitoring (Victron's app is better), and if budget is tight.", { size: 12 });
-  y += 12;
+  y += await body(f.id, M, y, "Buy REDARC for: DC-DC chargers. Think twice for: monitoring (Victron's app is better), and if budget is tight.", { size: 13 });
+  y += 10;
 
   y += await heading(f.id, M, y, 'Victron', { size: 17 });
   y += 2;
   await txt(f.id, M + CW - 90, y - 22, 'The Smart Choice', { size: 11, style: 'SemiBold', color: COL.wattle });
-  y += await body(f.id, M, y, "Dutch company, since 1975. Best app in the business. If you like checking battery level on your phone, seeing graphs, and getting alerts, Victron's ecosystem is in a league of its own.");
+  y += await body(f.id, M, y, "Dutch company, since 1975. Best app in the business. Battery level on your phone, graphs, alerts. Victron's ecosystem is in a league of its own.");
   y += 4;
-  y += await body(f.id, M, y, "Buy Victron for: charge controllers, battery monitors, inverters. Think twice for: requires more separate components than REDARC or Enerdrive.", { size: 12 });
+  y += await body(f.id, M, y, "Buy Victron for: charge controllers, battery monitors, inverters. Think twice for: more separate components than REDARC or Enerdrive.", { size: 13 });
 
-  await pageNum(f.id, 8);
+  await pageFooter(f.id, 8);
   await progressBar(f.id, 3);
 }
 
@@ -729,10 +753,10 @@ async function buildS4p2(pi) {
       ['App', 'Good', 'Excellent', 'Good', 'Basic'],
       ['AU support', 'Excellent', 'Good', 'Excellent', 'OK'],
     ],
-    fontSize: 10, rowH: 26, headerH: 30,
+    fontSize: 12, rowH: 28, headerH: 32,
   });
 
-  await pageNum(f.id, 9);
+  await pageFooter(f.id, 9);
   await progressBar(f.id, 3);
 }
 
@@ -742,23 +766,23 @@ async function buildS4p3(pi) {
   let y = await contHeader(f.id, 'Which Brands to Buy');
 
   y += await heading(f.id, M, y, 'Mixing Brands', { size: 17 });
-  y += 4;
-  y += await body(f.id, M, y, "You don't have to buy everything from one brand. Experienced caravanners mix and match: REDARC DC-DC, Victron monitoring, best-deal panels, Enerdrive battery. Standard electrical connections, not proprietary.");
-  y += 12;
+  y += 2;
+  y += await body(f.id, M, y, "You don't have to buy from one brand. Mix and match: REDARC DC-DC, Victron monitoring, Enerdrive battery. Standard connections, not proprietary.");
+  y += 8;
 
   y += await heading(f.id, M, y, 'Where to Buy in Australia', { size: 17 });
-  y += 4;
+  y += 2;
   y += await bulletItem(f.id, M, y, 'Solar 4 RVs, Caravan RV Camping, My Generator (specialist retailers)');
   y += await bulletItem(f.id, M, y, 'REDARC, Enerdrive, Renogy sell direct. Victron via distributors.');
   y += await bulletItem(f.id, M, y, 'Jaycar for cables, fuses, and small bits.');
-  y += 4;
-  y += await body(f.id, M, y, "Avoid no-name brands on eBay/Amazon with no Australian warranty.", { size: 12, bold: true });
-  y += 14;
+  y += 2;
+  y += await body(f.id, M, y, "Avoid no-name brands on eBay/Amazon with no Australian warranty.", { size: 13, bold: true });
+  y += 8;
 
   y += await fieldNote(f.id, M, y, CW, "DON'T FORGET THE SMALL BITS",
-    "Everyone budgets for the big components and forgets cables, fuses, Anderson plugs, and mounting brackets. Budget $100-$400. The Shopping List Worksheet has a full checklist."
+    "Everyone forgets cables, fuses, Anderson plugs, and mounting brackets. Budget $100-$400. The Shopping List Worksheet has a full checklist."
   );
-  y += 14;
+  y += 10;
 
   // Weekender shopping list
   await rect(f.id, M - 2, y, CW + 4, 26, { ...TIER.weekender, a: 0.12 }, { radius: 4, stroke: TIER.weekender });
@@ -777,10 +801,10 @@ async function buildS4p3(pi) {
       ['Monitor', 'Victron SmartShunt', '$130-$160'],
       ['Wiring + bits', 'Cable, fuses, Anderson', '$100-$200'],
     ],
-    headerBg: TIER.weekender, fontSize: 11, rowH: 26,
+    headerBg: TIER.weekender, fontSize: 12, rowH: 28,
   });
 
-  await pageNum(f.id, 10);
+  await pageFooter(f.id, 10);
   await progressBar(f.id, 3);
 }
 
@@ -807,7 +831,7 @@ async function buildS4p4(pi) {
       ['Monitor', 'Victron SmartShunt', '$130-$160'],
       ['Wiring + bits', 'Cable, fuses, Anderson, ext socket', '$150-$300'],
     ],
-    headerBg: TIER.tourer, fontSize: 11, rowH: 26,
+    headerBg: TIER.tourer, fontSize: 12, rowH: 28,
   });
   y += 16;
 
@@ -829,10 +853,10 @@ async function buildS4p4(pi) {
       ['Monitor', 'Victron SmartShunt/BMV-712', '$130-$300'],
       ['Wiring + bits', 'Heavy cable, fuses, dist. board', '$200-$400'],
     ],
-    headerBg: TIER.fulltimer, fontSize: 11, rowH: 26,
+    headerBg: TIER.fulltimer, fontSize: 12, rowH: 28,
   });
 
-  await pageNum(f.id, 11);
+  await pageFooter(f.id, 11);
   await progressBar(f.id, 3);
 }
 
@@ -841,15 +865,15 @@ async function buildS5p1(pi) {
   const f = await makePage('S5 - Sizing Check', pi);
   let y = await sectionHeader(f.id, 5, 'Checking Your Sizing');
 
-  y += await fieldNote(f.id, M, y, CW, 'THE SHORT VERSION',
-    "If you're buying from the shopping lists in Section 4, the sizing is already done. This is a double-check for peace of mind, or for setups that don't fit neatly into one tier."
+  y += await fieldNote(f.id, M, y, CW, 'BOTTOM LINE',
+    "Buying from the shopping lists in Section 4? Sizing is already done. This is a double-check, or for setups between tiers."
   );
-  y += 14;
+  y += 8;
 
   y += await heading(f.id, M, y, 'The Quick Sanity Check');
-  y += 4;
-  y += await body(f.id, M, y, "Before you buy, run these three checks. If all three pass, you're good to go.");
-  y += 12;
+  y += 2;
+  y += await body(f.id, M, y, "Run these three checks. If all pass, you're good to go.");
+  y += 8;
 
   // Check 1
   await rect(f.id, M, y, CW, 80, COL.lightGrey, { radius: 6 });
@@ -874,7 +898,7 @@ async function buildS5p1(pi) {
 
   y += await body(f.id, M, y, "All three checks pass? You're done. Go buy it.", { bold: true, size: 14 });
 
-  await pageNum(f.id, 12);
+  await pageFooter(f.id, 12);
   await progressBar(f.id, 4);
 }
 
@@ -888,15 +912,15 @@ async function buildS5p2(pi) {
   y += await body(f.id, M, y, "Daily use: 2,700 Wh (with 25% buffer). Tourers who drive regularly.");
   y += 8;
 
-  y += await body(f.id, M, y, "Battery: 2,700 Wh / 12V = 225Ah minimum. With cloudy-day buffer: 400Ah total (2x 200Ah lithium).", { size: 12 });
+  y += await body(f.id, M, y, "Battery: 2,700 Wh / 12V = 225Ah minimum. With cloudy-day buffer: 400Ah total (2x 200Ah lithium).", { size: 13 });
   y += 4;
-  y += await body(f.id, M, y, "Solar: 2,700 / 5.5h / 0.65 = ~760W needed, but DC-DC helps on driving days. They go 400W roof + 200W portable (600W total).", { size: 12 });
+  y += await body(f.id, M, y, "Solar: 2,700 / 5.5h / 0.65 = ~760W needed, but DC-DC helps on driving days. 400W roof + 200W portable (600W total).", { size: 13 });
   y += 4;
-  y += await body(f.id, M, y, "Controller: 400W / 12V x 1.25 = 42A. They buy a 50A MPPT.", { size: 12 });
+  y += await body(f.id, M, y, "Controller: 400W / 12V x 1.25 = 42A. They buy a 50A MPPT.", { size: 13 });
   y += 4;
-  y += await body(f.id, M, y, "DC-DC: 40A charger gives ~160Ah on a 4-hour drive.", { size: 12 });
+  y += await body(f.id, M, y, "DC-DC: 40A charger gives ~160Ah on a 4-hour drive.", { size: 13 });
   y += 4;
-  y += await body(f.id, M, y, "Inverter: Biggest appliance is 1000W microwave. They get 2000W pure sine wave.", { size: 12 });
+  y += await body(f.id, M, y, "Inverter: Biggest appliance is 1000W microwave. 2000W pure sine wave.", { size: 13 });
   y += 14;
 
   y += await heading(f.id, M, y, "Dave and Sarah's Final System", { size: 17 });
@@ -917,7 +941,7 @@ async function buildS5p2(pi) {
     fontSize: 12,
   });
 
-  await pageNum(f.id, 13);
+  await pageFooter(f.id, 13);
   await progressBar(f.id, 4);
 }
 
@@ -953,7 +977,7 @@ async function buildS5p3(pi) {
   y += await divider(f.id, y);
   y += await body(f.id, M, y, "Use the System Sizing Worksheet at the back to run through these calculations with your own numbers.");
 
-  await pageNum(f.id, 14);
+  await pageFooter(f.id, 14);
   await progressBar(f.id, 4);
 }
 
@@ -962,8 +986,8 @@ async function buildS6p1(pi) {
   const f = await makePage('S6 - Mistakes', pi);
   let y = await sectionHeader(f.id, 6, 'Expensive Mistakes');
 
-  y += await body(f.id, M, y, "If you've followed this guide, you've already avoided all of these. Read through anyway. It's good to know what you're not doing.");
-  y += 14;
+  y += await body(f.id, M, y, "If you've followed this guide, you've already avoided all of these. Read through anyway.");
+  y += 8;
 
   // Mistake 1
   y += await costCallout(f.id, M, y,
@@ -989,7 +1013,7 @@ async function buildS6p1(pi) {
     "12V systems need thicker cables than house wiring. Thin cables waste power. Going DIY? One size thicker than you think you need."
   );
 
-  await pageNum(f.id, 15);
+  await pageFooter(f.id, 15);
   await progressBar(f.id, 5);
 }
 
@@ -1016,20 +1040,20 @@ async function buildS6p2(pi) {
     "You buy a portable panel but there's nowhere to plug it in outside. An external Anderson socket costs $20-$40 and takes 30 minutes to install."
   );
 
-  y += 10;
+  y += 6;
   y += await divider(f.id, y);
 
   y += await heading(f.id, M, y, 'The Pattern');
-  y += 4;
+  y += 2;
   y += await body(f.id, M, y, "Every mistake comes from one of three places:");
+  y += 4;
+  y += await bulletItem(f.id, M, y, "Buying cheap and replacing later. The right gear once is cheaper than the wrong gear twice.", { bold: true });
+  y += await bulletItem(f.id, M, y, "Not knowing real-world performance. Lab specs differ from reality. This guide accounts for that.", { bold: true });
+  y += await bulletItem(f.id, M, y, "Skipping the small stuff. Cables, monitors, and Anderson plugs are cheap. The problems they prevent aren't.", { bold: true });
   y += 8;
-  y += await bulletItem(f.id, M, y, "Buying cheap and replacing later. The right gear once is always cheaper than the wrong gear twice.", { bold: true });
-  y += await bulletItem(f.id, M, y, "Not knowing how things actually perform. Real-world performance differs from lab specs. This guide accounts for that.", { bold: true });
-  y += await bulletItem(f.id, M, y, "Skipping the small stuff. Cables, monitors, and Anderson plugs are cheap. The problems they prevent are expensive.", { bold: true });
-  y += 12;
-  y += await body(f.id, M, y, "If you bought from the shopping lists in Section 4, you've already avoided all seven.", { bold: true });
+  y += await body(f.id, M, y, "If you bought from the shopping lists in Section 4, you've avoided all seven.", { bold: true });
 
-  await pageNum(f.id, 16);
+  await pageFooter(f.id, 16);
   await progressBar(f.id, 5);
 }
 
@@ -1039,42 +1063,42 @@ async function buildCheckBYB(pi) {
   let y = await specialHeader(f.id, 'CHECKLIST', 'Before You Buy');
 
   await txt(f.id, M, y, 'THE BASICS', { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 2 });
-  y += 18;
+  y += 16;
   y += await checkbox(f.id, M, y, 'Completed the Power Audit (Section 2 or worksheet)');
   y += await checkbox(f.id, M, y, 'Know your daily watt-hours number');
   y += await checkbox(f.id, M, y, 'Identified your tier: Weekender / Tourer / Full-timer');
-  y += 8;
+  y += 6;
 
   await txt(f.id, M, y, 'YOUR GEAR', { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 2 });
-  y += 18;
-  y += await checkbox(f.id, M, y, 'Filled in the Shopping List worksheet with specific products');
-  y += await checkbox(f.id, M, y, 'Battery is lithium with a built-in BMS');
+  y += 16;
+  y += await checkbox(f.id, M, y, 'Shopping List worksheet filled in with specific products');
+  y += await checkbox(f.id, M, y, 'Battery is lithium with built-in BMS');
   y += await checkbox(f.id, M, y, 'Inverter is pure sine wave');
-  y += await checkbox(f.id, M, y, 'Included a battery monitor (e.g. Victron SmartShunt)');
-  y += await checkbox(f.id, M, y, 'Included an external Anderson plug socket');
-  y += await checkbox(f.id, M, y, 'Included cables, fuses, and connectors in your budget');
-  y += 8;
+  y += await checkbox(f.id, M, y, 'Battery monitor included (e.g. Victron SmartShunt)');
+  y += await checkbox(f.id, M, y, 'External Anderson plug socket included');
+  y += await checkbox(f.id, M, y, 'Cables, fuses, and connectors in your budget');
+  y += 6;
 
   await txt(f.id, M, y, 'WILL IT FIT?', { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 2 });
-  y += 18;
+  y += 16;
   y += await checkbox(f.id, M, y, 'Measured roof space for panels (clear of A/C, antenna, hatches)');
   y += await checkbox(f.id, M, y, 'Checked battery box dimensions');
   y += await checkbox(f.id, M, y, 'Confirmed weight (lithium is usually lighter than AGM)');
-  y += 8;
+  y += 6;
 
   await txt(f.id, M, y, 'QUICK SIZING CHECK', { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 2 });
-  y += 18;
+  y += 16;
   y += await checkbox(f.id, M, y, 'Solar watts = 1.5-2x battery Ah?');
   y += await checkbox(f.id, M, y, 'Controller amps = ~1/3 of solar watts?');
   y += await checkbox(f.id, M, y, 'Inverter handles biggest appliance with room to spare?');
-  y += 8;
+  y += 6;
 
   await txt(f.id, M, y, 'INSTALLATION', { size: 10, style: 'SemiBold', color: COL.wattle, spacing: 2 });
-  y += 18;
-  y += await checkbox(f.id, M, y, 'Got an installer? Hand them the Installer Brief from this guide.');
-  y += await checkbox(f.id, M, y, 'Going DIY? Grab manufacturer installation guides for each component.');
+  y += 16;
+  y += await checkbox(f.id, M, y, 'Got an installer? Hand them the Installer Brief.');
+  y += await checkbox(f.id, M, y, 'Going DIY? Grab manufacturer install guides for each component.');
 
-  await pageNum(f.id, 17);
+  await pageFooter(f.id, 17);
   await progressBar(f.id, 6);
 }
 
@@ -1083,11 +1107,11 @@ async function buildCheckInstall1(pi) {
   const f = await makePage('CL - Installer Brief', pi);
   let y = await specialHeader(f.id, 'CHECKLIST', 'What to Tell Your Installer');
 
-  y += await body(f.id, M, y, "Print this page and hand it to your installer. It tells them exactly what you want.", { bold: true });
-  y += 10;
+  y += await body(f.id, M, y, "Print this page and hand it to your installer.", { bold: true });
+  y += 8;
 
   y += await heading(f.id, M, y, 'My System Specs', { size: 17 });
-  y += 6;
+  y += 4;
 
   const specRows = [
     ['Battery', '_______ Ah lithium (Brand: _______)'],
@@ -1111,7 +1135,7 @@ async function buildCheckInstall1(pi) {
   y += await checkbox(f.id, M, y, 'All wiring is correctly sized for the system');
   y += await checkbox(f.id, M, y, 'I get a walk-through of the system when done (see next page)');
 
-  await pageNum(f.id, 18);
+  await pageFooter(f.id, 18);
   await progressBar(f.id, 6);
 }
 
@@ -1121,32 +1145,32 @@ async function buildCheckInstall2(pi) {
   let y = await contHeader(f.id, 'What to Tell Your Installer');
 
   y += await heading(f.id, M, y, 'Questions to Ask', { size: 17 });
-  y += 6;
+  y += 4;
 
   y += await numberedItem(f.id, M, y, 1, '"Have you installed this brand/setup before?"');
   y += await numberedItem(f.id, M, y, 2, '"Is there anything in my spec list you\'d change, and why?"');
   y += await numberedItem(f.id, M, y, 3, '"What\'s included in the quote and what\'s extra?"');
   y += await numberedItem(f.id, M, y, 4, '"How long will it take?" (standard tourer = ~1 day)');
   y += await numberedItem(f.id, M, y, 5, '"What warranty do I get on the installation work?"');
-  y += 12;
+  y += 8;
 
   y += await heading(f.id, M, y, 'After Installation Walk-Through', { size: 17 });
-  y += 4;
+  y += 2;
   y += await body(f.id, M, y, "Before the installer leaves, get them to show you:");
-  y += 8;
-  y += await checkbox(f.id, M, y, 'How to read the battery monitor (percentage, charging status)');
+  y += 6;
+  y += await checkbox(f.id, M, y, 'How to read the battery monitor (percentage, charging)');
   y += await checkbox(f.id, M, y, 'Where the main fuse/isolator is');
   y += await checkbox(f.id, M, y, 'How to connect the portable panel via Anderson plug');
-  y += await checkbox(f.id, M, y, 'System is currently working: solar charging, battery level going up');
+  y += await checkbox(f.id, M, y, 'System is working: solar charging, battery level going up');
   y += await checkbox(f.id, M, y, 'Test a 240V appliance through the inverter');
   y += await checkbox(f.id, M, y, "Their contact number for roadside issues");
 
-  y += 14;
+  y += 8;
   y += await fieldNote(f.id, M, y, CW, 'WHY THIS PAGE EXISTS',
-    "Installers are busy. If you walk in with just \"I want solar on my caravan,\" you'll get whatever system they normally install. You've done the homework. This page makes sure you get what you planned for."
+    "Installers are busy. Walk in with just \"I want solar\" and you'll get whatever they normally install. This page makes sure you get what you planned for."
   );
 
-  await pageNum(f.id, 19);
+  await pageFooter(f.id, 19);
   await progressBar(f.id, 6);
 }
 
@@ -1155,29 +1179,29 @@ async function buildCheckWeek1(pi) {
   const f = await makePage('CL - First Week p1', pi);
   let y = await specialHeader(f.id, 'CHECKLIST', 'Your First Week With Solar');
 
-  y += await body(f.id, M, y, "Your system is in. Here's how to get familiar with it. After a week this will all be second nature.");
-  y += 12;
+  y += await body(f.id, M, y, "Your system is in. Here's how to get familiar with it. After a week it'll be second nature.");
+  y += 8;
 
   y += await heading(f.id, M, y, 'Day 1: Get to Know Your Monitor', { size: 17 });
-  y += 6;
-  y += await checkbox(f.id, M, y, 'Find the battery monitor and read it. Should show a percentage.');
-  y += await checkbox(f.id, M, y, 'Turn on your usual stuff (fridge, lights). Watch the monitor show power going out.');
-  y += await checkbox(f.id, M, y, 'Test the inverter. Plug in phone charger. Then try your biggest appliance.');
-  y += await checkbox(f.id, M, y, 'Plug in portable panel via Anderson socket. Confirm extra charging shows.');
-  y += 10;
+  y += 4;
+  y += await checkbox(f.id, M, y, 'Find the battery monitor. Should show a percentage.');
+  y += await checkbox(f.id, M, y, 'Turn on your usual stuff (fridge, lights). Watch the monitor.');
+  y += await checkbox(f.id, M, y, 'Test the inverter. Phone charger first, then biggest appliance.');
+  y += await checkbox(f.id, M, y, 'Plug in portable panel via Anderson socket. Confirm charging.');
+  y += 8;
 
   y += await heading(f.id, M, y, 'Day 2-3: Learn the Pattern', { size: 17 });
-  y += 6;
-  y += await checkbox(f.id, M, y, 'Check monitor first thing in the morning. 100% to 85% overnight is normal.');
-  y += await checkbox(f.id, M, y, 'Check again late afternoon. Back near 95-100%? System is keeping up.');
-  y += await checkbox(f.id, M, y, 'Notice the rhythm: battery drops overnight, solar fills during the day.');
-  y += 10;
+  y += 4;
+  y += await checkbox(f.id, M, y, 'Check monitor in the morning. 100% to 85% overnight is normal.');
+  y += await checkbox(f.id, M, y, 'Check late afternoon. Back near 95-100%? System is keeping up.');
+  y += await checkbox(f.id, M, y, 'Notice the rhythm: drops overnight, fills during the day.');
+  y += 8;
 
   y += await fieldNote(f.id, M, y, CW, 'THE DAILY RHYTHM',
-    "Battery drops overnight (fridge), solar fills it during the day. As long as the top-up roughly matches the drawdown, you're golden. If it's hovering around 80% by afternoon, set up the portable panel."
+    "Battery drops overnight (fridge), solar fills it during the day. If the top-up roughly matches drawdown, you're golden. Hovering around 80% by afternoon? Set up the portable panel."
   );
 
-  await pageNum(f.id, 20);
+  await pageFooter(f.id, 20);
   await progressBar(f.id, 6);
 }
 
@@ -1187,33 +1211,33 @@ async function buildCheckWeek2(pi) {
   let y = await contHeader(f.id, 'Your First Week With Solar');
 
   y += await heading(f.id, M, y, 'What You\'ll See (All Normal)', { size: 17 });
-  y += 6;
+  y += 4;
   y += await bulletItem(f.id, M, y, 'Battery sits between 70-100% on a typical day');
   y += await bulletItem(f.id, M, y, 'Solar output is high midday, low morning/evening, zero at night');
   y += await bulletItem(f.id, M, y, 'Fridge draws power in bursts (compressor cycling on/off)');
   y += await bulletItem(f.id, M, y, 'Inverter hums quietly when switched on');
   y += await bulletItem(f.id, M, y, 'Cloudy days produce less solar (1-2 cloudy days is fine)');
-  y += 12;
+  y += 8;
 
   y += await heading(f.id, M, y, 'If Something Seems Off', { size: 17 });
+  y += 4;
+  y += await body(f.id, M, y, "Battery dropping even though it's sunny?", { bold: true, size: 13 });
+  y += await body(f.id, M, y, "Check for shade on panels. Move the van or set up portable panel.");
   y += 6;
-  y += await body(f.id, M, y, "Battery dropping even though it's sunny?", { bold: true, size: 12 });
-  y += await body(f.id, M, y, "Check for shade on panels. Move the van or set up portable panel in full sun.");
-  y += 8;
-  y += await body(f.id, M, y, "Inverter switches off when you plug something in?", { bold: true, size: 12 });
+  y += await body(f.id, M, y, "Inverter switches off when you plug something in?", { bold: true, size: 13 });
   y += await body(f.id, M, y, "Too much at once. Use one big appliance at a time.");
-  y += 8;
-  y += await body(f.id, M, y, "Battery low after a few overcast days?", { bold: true, size: 12 });
+  y += 6;
+  y += await body(f.id, M, y, "Battery low after a few overcast days?", { bold: true, size: 13 });
   y += await body(f.id, M, y, "Drive for a couple of hours. The DC-DC charger will handle it.");
-  y += 14;
+  y += 10;
 
   y += await heading(f.id, M, y, 'After a Week', { size: 17 });
-  y += 4;
-  y += await body(f.id, M, y, "You'll barely think about it. A quick glance at the battery monitor in the morning becomes like checking the fuel gauge. If the battery stays above 60-70% most of the time, your system is well sized.");
-  y += 10;
+  y += 2;
+  y += await body(f.id, M, y, "You'll barely think about it. A quick glance at the monitor becomes like checking the fuel gauge. If it stays above 60-70% most of the time, your system is well sized.");
+  y += 8;
   y += await body(f.id, M, y, "That's it. You've got solar on your caravan and you know how to use it.", { bold: true });
 
-  await pageNum(f.id, 21);
+  await pageFooter(f.id, 21);
   await progressBar(f.id, 6);
 }
 
@@ -1244,10 +1268,10 @@ async function buildWSPower1(pi) {
       ['CPAP machine', '30-60', '____', '_____________'],
       ['Electric blanket', '40-60', '____', '_____________'],
     ],
-    fontSize: 11, rowH: 26, headerH: 30,
+    fontSize: 12, rowH: 28, headerH: 32,
   });
 
-  await pageNum(f.id, 22);
+  await pageFooter(f.id, 22);
   await progressBar(f.id, 7);
 }
 
@@ -1270,7 +1294,7 @@ async function buildWSPower2(pi) {
       ['_______________', '_____', '____', '_____________'],
       ['_______________', '_____', '____', '_____________'],
     ],
-    fontSize: 11, rowH: 26, headerH: 30,
+    fontSize: 12, rowH: 28, headerH: 32,
   });
   y += 10;
 
@@ -1302,11 +1326,11 @@ async function buildWSPower2(pi) {
 
   await rect(f.id, M, y, CW, 50, COL.parchment, { radius: 6 });
   await txt(f.id, M + 14, y + 8, 'My tier:', { size: 13, style: 'SemiBold', color: COL.deepSlate });
-  await txt(f.id, M + 100, y + 8, '______________________', { size: 13, color: COL.ghostGum });
+  await txt(f.id, M + 100, y + 8, '______________________', { size: 13, color: COL.mutedText });
   await txt(f.id, M + 14, y + 28, 'My daily total:', { size: 13, style: 'SemiBold', color: COL.deepSlate });
-  await txt(f.id, M + 130, y + 28, '_____________ Wh', { size: 13, color: COL.ghostGum });
+  await txt(f.id, M + 130, y + 28, '_____________ Wh', { size: 13, color: COL.mutedText });
 
-  await pageNum(f.id, 23);
+  await pageFooter(f.id, 23);
   await progressBar(f.id, 7);
 }
 
@@ -1317,7 +1341,7 @@ async function buildWSSizing1(pi) {
 
   await rect(f.id, M, y, CW, 36, COL.parchment, { radius: 4 });
   await txt(f.id, M + 14, y + 10, 'Daily power use (from Power Audit):', { size: 12, style: 'SemiBold', color: COL.deepSlate });
-  await txt(f.id, M + CW - 140, y + 10, '_____________ Wh', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + CW - 140, y + 10, '_____________ Wh', { size: 12, color: COL.mutedText });
   y += 48;
 
   // Step 1
@@ -1332,7 +1356,7 @@ async function buildWSSizing1(pi) {
   await txt(f.id, M + 14, y + 30, '_______ Ah x 1.5 = _______ Ah (with 1 day reserve)', { size: 12, color: COL.deepSlate });
   y += 72;
   await txt(f.id, M, y, 'Your battery choice:', { size: 12, style: 'SemiBold', color: COL.deepSlate });
-  await txt(f.id, M + 150, y, '_______ Ah lithium', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 150, y, '_______ Ah lithium', { size: 12, color: COL.mutedText });
   y += 24;
 
   // Step 2
@@ -1346,9 +1370,9 @@ async function buildWSSizing1(pi) {
   await txt(f.id, M + 14, y + 12, '_______ Wh / _______ hours / 0.65 = _______ W', { size: 12, color: COL.deepSlate });
   y += 52;
   await txt(f.id, M, y, 'Fixed panels:', { size: 12, style: 'SemiBold' });
-  await txt(f.id, M + 100, y, '_______ W', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 100, y, '_______ W', { size: 12, color: COL.mutedText });
   await txt(f.id, M + 200, y, 'Portable:', { size: 12, style: 'SemiBold' });
-  await txt(f.id, M + 270, y, '_______ W', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 270, y, '_______ W', { size: 12, color: COL.mutedText });
   y += 24;
 
   // Step 3
@@ -1362,9 +1386,9 @@ async function buildWSSizing1(pi) {
   await txt(f.id, M + 14, y + 12, '_______ W / 12 x 1.25 = _______ A', { size: 12, color: COL.deepSlate });
   y += 52;
   await txt(f.id, M, y, 'Your charge controller:', { size: 12, style: 'SemiBold' });
-  await txt(f.id, M + 170, y, '_______ A MPPT', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 170, y, '_______ A MPPT', { size: 12, color: COL.mutedText });
 
-  await pageNum(f.id, 24);
+  await pageFooter(f.id, 24);
   await progressBar(f.id, 7);
 }
 
@@ -1384,7 +1408,7 @@ async function buildWSSizing2(pi) {
   await txt(f.id, M + 14, y + 12, 'Total simultaneous: _______ W x 1.2 = _______ W', { size: 12, color: COL.deepSlate });
   y += 52;
   await txt(f.id, M, y, 'Your inverter:', { size: 12, style: 'SemiBold' });
-  await txt(f.id, M + 110, y, '_______ W pure sine wave', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 110, y, '_______ W pure sine wave', { size: 12, color: COL.mutedText });
   y += 24;
 
   // Step 5
@@ -1395,7 +1419,7 @@ async function buildWSSizing2(pi) {
   y += await body(f.id, M, y, "Weekender: 20A. Tourer: 40A. Full-timer: 40-60A.");
   y += 4;
   await txt(f.id, M, y, 'Your DC-DC charger:', { size: 12, style: 'SemiBold' });
-  await txt(f.id, M + 150, y, '_______ A', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 150, y, '_______ A', { size: 12, color: COL.mutedText });
   y += 26;
 
   y += await divider(f.id, y);
@@ -1419,7 +1443,7 @@ async function buildWSSizing2(pi) {
       ['Wiring + fuses', '________', '____________', '$_______'],
       ['TOTAL', '', '', '$_______'],
     ],
-    fontSize: 11, rowH: 26,
+    fontSize: 12, rowH: 28,
   });
   y += 12;
 
@@ -1430,7 +1454,7 @@ async function buildWSSizing2(pi) {
   y += await checkbox(f.id, M, y, 'Inverter = 2-3x biggest 240V appliance?');
   y += await checkbox(f.id, M, y, 'All three pass? System is balanced. Go buy it.');
 
-  await pageNum(f.id, 25);
+  await pageFooter(f.id, 25);
   await progressBar(f.id, 7);
 }
 
@@ -1441,9 +1465,9 @@ async function buildWSShopping1(pi) {
 
   await rect(f.id, M, y, CW, 36, COL.parchment, { radius: 4 });
   await txt(f.id, M + 14, y + 10, 'My tier:', { size: 12, style: 'SemiBold', color: COL.deepSlate });
-  await txt(f.id, M + 80, y + 10, '____________', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 80, y + 10, '____________', { size: 12, color: COL.mutedText });
   await txt(f.id, M + 240, y + 10, 'Budget range:', { size: 12, style: 'SemiBold', color: COL.deepSlate });
-  await txt(f.id, M + 340, y + 10, '$____________', { size: 12, color: COL.ghostGum });
+  await txt(f.id, M + 340, y + 10, '$____________', { size: 12, color: COL.mutedText });
   y += 50;
 
   const components = [
@@ -1459,16 +1483,16 @@ async function buildWSShopping1(pi) {
   for (const comp of components) {
     await rect(f.id, M, y, CW, 60, COL.lightGrey, { radius: 4 });
     await txt(f.id, M + 10, y + 6, comp.name, { size: 12, style: 'SemiBold', color: COL.deepSlate });
-    await txt(f.id, M + 10, y + 24, comp.spec, { size: 11, color: COL.charcoal });
+    await txt(f.id, M + 10, y + 24, comp.spec, { size: 12, color: COL.charcoal });
     if (comp.note) {
-      await txt(f.id, M + 10, y + 42, comp.note, { size: 10, color: COL.ghostGum });
+      await txt(f.id, M + 10, y + 42, comp.note, { size: 12, color: COL.mutedText });
     }
-    await txt(f.id, M + CW - 130, y + 6, 'Brand:', { size: 10, color: COL.ghostGum });
-    await txt(f.id, M + CW - 130, y + 24, 'Price: $', { size: 10, color: COL.ghostGum });
+    await txt(f.id, M + CW - 130, y + 6, 'Brand:', { size: 12, color: COL.mutedText });
+    await txt(f.id, M + CW - 130, y + 24, 'Price: $', { size: 12, color: COL.mutedText });
     y += 66;
   }
 
-  await pageNum(f.id, 26);
+  await pageFooter(f.id, 26);
   await progressBar(f.id, 7);
 }
 
@@ -1498,7 +1522,7 @@ async function buildWSShopping2(pi) {
       ['Cable ties + clips', 'Assorted', '1 pack', '$_____'],
       ['Mounting brackets', 'For panels', '___ sets', '$_____'],
     ],
-    fontSize: 10, rowH: 24, headerH: 28,
+    fontSize: 12, rowH: 26, headerH: 30,
   });
   y += 14;
 
@@ -1519,17 +1543,74 @@ async function buildWSShopping2(pi) {
       ['Installation (if applicable)', '$_____________'],
       ['GRAND TOTAL', '$_____________'],
     ],
-    fontSize: 11, rowH: 24, headerH: 28,
+    fontSize: 12, rowH: 26, headerH: 30,
   });
   y += 14;
 
-  y += await checkbox(f.id, M, y, 'Power audit completed');
-  y += await checkbox(f.id, M, y, 'System sizing completed');
-  y += await checkbox(f.id, M, y, 'Physical dimensions checked (panels fit roof, battery fits box)');
-  y += await checkbox(f.id, M, y, 'Budget includes wiring and accessories');
+  y += await body(f.id, M, y, "Use the Before You Buy checklist to make sure you haven't missed anything.", { size: 13, bold: true });
 
-  await pageNum(f.id, 27);
+  await pageFooter(f.id, 27);
   await progressBar(f.id, 7);
+}
+
+// --- BACK COVER ---
+async function buildBackCover(pi) {
+  const f = await makePage('Back Cover', pi);
+  await fill(f.id, COL.deepSlate);
+
+  // Top accent
+  await rect(f.id, 0, 0, W, 5, COL.wattle);
+
+  // Thank you
+  await txt(f.id, M, 120, "You're all set.", {
+    size: 36, family: 'Playfair Display', style: 'Bold', color: COL.white, lineH: 44
+  });
+
+  await rect(f.id, M, 175, 60, 3, COL.wattle);
+
+  await txt(f.id, M, 200, wrap(
+    "You've got your tier, your shopping list, and your checklists. Everything you need to get solar on your caravan without second-guessing yourself.", 46
+  ), { size: 16, color: { ...COL.white, a: 0.75 }, lineH: 26 });
+
+  // Resources recap
+  let y = 310;
+  await txt(f.id, M, y, 'YOUR RESOURCES', { size: 11, style: 'SemiBold', color: COL.wattle, spacing: 3 });
+  y += 28;
+
+  const resources = [
+    ['Power Audit Worksheet', 'Work out your daily watt-hours'],
+    ['System Sizing Worksheet', 'Size every component to your usage'],
+    ['Shopping List Worksheet', 'Track brands, specs, and costs'],
+    ['Before You Buy Checklist', 'Final check before you spend'],
+    ['Installer Brief', 'Hand this to your installer'],
+    ['First Week Checklist', 'Get comfortable with your system'],
+  ];
+
+  for (const [title, desc] of resources) {
+    await txt(f.id, M + 2, y, '\u2022', { size: 14, color: COL.wattle });
+    await txt(f.id, M + 18, y, title, { size: 14, style: 'SemiBold', color: COL.white });
+    await txt(f.id, M + 18, y + 20, desc, { size: 13, color: { ...COL.white, a: 0.55 } });
+    y += 46;
+  }
+
+  // CTA section
+  y += 20;
+  await rect(f.id, M, y, CW, 1, { ...COL.wattle, a: 0.3 });
+  y += 24;
+
+  await txt(f.id, M, y, 'WHAT TO DO NEXT', { size: 11, style: 'SemiBold', color: COL.wattle, spacing: 3 });
+  y += 28;
+  await txt(f.id, M, y, wrap(
+    "1. Complete your Power Audit worksheet\n2. Identify your tier (Weekender, Tourer, Full-timer)\n3. Fill in your Shopping List from Section 4\n4. Run through the Before You Buy checklist\n5. Hand your installer the Installer Brief, or order online", 50
+  ), { size: 14, color: { ...COL.white, a: 0.8 }, lineH: 24 });
+
+  // Footer
+  await rect(f.id, 0, H - 80, W, 80, { ...COL.black, a: 0.15 });
+  await txt(f.id, M, H - 60, 'Caravan Solar', { size: 18, family: 'Playfair Display', style: 'Bold', color: COL.white });
+  await txt(f.id, M, H - 38, 'caravansolar.au', { size: 12, color: COL.wattle });
+  await txt(f.id, W - M - 180, H - 50, wrap("Questions? Updates? New versions?\nVisit caravansolar.au", 35), {
+    size: 12, color: { ...COL.white, a: 0.5 }, lineH: 18
+  });
 }
 
 // =================================================================
@@ -1541,10 +1622,10 @@ async function main() {
   await connect();
   await join(CHANNEL);
   currentChannel = CHANNEL;
-  console.log('[connected] Building 29 pages...\n');
+  console.log('[connected] Building 30 pages...\n');
 
-  // Ensure Playfair Display + Open Sans are loaded in Figma
-  console.log('NOTE: Make sure Playfair Display and Open Sans fonts are loaded in Figma.\n');
+  // Ensure Playfair Display + Source Serif 4 are loaded in Figma
+  console.log('NOTE: Make sure Playfair Display and Source Serif 4 fonts are loaded in Figma.\n');
 
   const builders = [
     ['Cover', buildCover],
@@ -1576,6 +1657,7 @@ async function main() {
     ['Worksheet: System Sizing (2/2)', buildWSSizing2],
     ['Worksheet: Shopping List (1/2)', buildWSShopping1],
     ['Worksheet: Shopping List (2/2)', buildWSShopping2],
+    ['Back Cover', buildBackCover],
   ];
 
   for (let i = 0; i < builders.length; i++) {

@@ -4,7 +4,26 @@
       "Bash(cd /Users/jaykinkade/caravan/site && npm install framer-motion 2>&1)",
       "Bash(npm run:*)",
       "Bash(curl:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(gh repo:*)",
+      "Bash(npx claude-talk-to-figma-mcp:*)",
+      "Bash(export PATH=\"$HOME/.bun/bin:$PATH\" && cd /tmp/claude-talk-to-figma-mcp && bun run dist/socket.js 2>&1)",
+      "Bash(export PATH=\"$HOME/.bun/bin:$PATH\" && bun /Users/jaykinkade/.npm/_npx/d85eb07958d159c6/node_modules/claude-talk-to-figma-mcp/dist/socket.js 2>&1)",
+      "Bash(/Users/jaykinkade/caravan/figma.sh {\"command\":\"get_document_info\",\"params\":{}}:*)",
+      "Bash(chmod +x:*)",
+      "Bash(node:*)",
+      "Bash(/Users/jaykinkade/caravan/figma.sh {\"command\":\"create_frame\",\"params\":{\"name\":\"Test\",\"x\":0,\"y\":0,\"width\":595,\"height\":842}}:*)",
+      "Bash(/Users/jaykinkade/caravan/figma.sh {\"command\":\"delete_node\",\"params\":{\"nodeId\":\"4:7\"}}:*)",
+      "Bash(/Users/jaykinkade/caravan/figma.sh {\"command\":\"create_frame\",\"params\":{\"name\":\"Cover\",\"x\":0,\"y\":0,\"width\":595,\"height\":842}}:*)",
+      "Bash(/Users/jaykinkade/caravan/figma.sh:*)",
+      "Bash(FIGMA_CHANNEL=6izur3na node:*)",
+      "Bash(ls:*)",
+      "Bash(python3:*)",
+      "Bash(tail:*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "ClaudeTalkToFigma"
+  ]
 }
