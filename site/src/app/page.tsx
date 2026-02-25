@@ -290,6 +290,12 @@ export default function Home() {
                     PDF download. Prints on A4.
                   </p>
                 </div>
+                <a
+                  href={SITE.quizUrl}
+                  className="inline-flex items-center gap-1.5 text-brand-amber hover:text-brand-amber-light font-body font-medium text-base mt-4 transition-colors"
+                >
+                  Not sure what you need? Take the 2-minute quiz &rarr;
+                </a>
               </AnimatedSection>
             </div>
 
