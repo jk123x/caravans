@@ -30,8 +30,8 @@ export default function PreviewPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* TOC sidebar */}
-      <nav className="fixed top-0 left-0 w-64 h-screen bg-brand-cream border-r border-brand-stone overflow-y-auto p-6 hidden lg:block z-50">
-        <p className="font-display text-brand-navy text-lg mb-1">
+      <nav className="fixed top-0 left-0 w-64 h-screen bg-brand-cream border-r border-brand-silver overflow-y-auto p-6 hidden lg:block z-50">
+        <p className="font-display text-brand-slate text-lg mb-1">
           Guide Preview
         </p>
         <p className="text-brand-muted text-xs mb-6 font-body">
@@ -42,7 +42,7 @@ export default function PreviewPage() {
             <li key={s.file}>
               <a
                 href={`#${s.file}`}
-                className="text-sm text-brand-charcoal hover:text-brand-amber transition-colors font-body leading-snug block"
+                className="text-sm text-brand-body hover:text-brand-gold transition-colors font-body leading-snug block"
               >
                 {s.label}
               </a>
@@ -54,8 +54,8 @@ export default function PreviewPage() {
       {/* Content */}
       <main className="lg:ml-64">
         <div className="max-w-3xl mx-auto px-6 sm:px-10 py-12">
-          <div className="mb-12 pb-8 border-b border-brand-stone">
-            <h1 className="font-display text-brand-navy text-3xl mb-2">
+          <div className="mb-12 pb-8 border-b border-brand-silver">
+            <h1 className="font-display text-brand-slate text-3xl mb-2">
               The Beginner&apos;s Guide to Caravan Solar
             </h1>
             <p className="text-brand-muted font-body">
@@ -65,8 +65,8 @@ export default function PreviewPage() {
 
           {content.map((s) => (
             <article key={s.file} id={s.file} className="mb-16 scroll-mt-8">
-              <div className="mb-6 pb-3 border-b-2 border-brand-amber/30">
-                <span className="text-xs font-body font-semibold text-brand-amber uppercase tracking-wider">
+              <div className="mb-6 pb-3 border-b-2 border-brand-gold/30">
+                <span className="text-xs font-body font-semibold text-brand-gold uppercase tracking-wider">
                   {s.label}
                 </span>
               </div>

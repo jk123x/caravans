@@ -15,20 +15,6 @@ import { QuizResultView } from "@/components/quiz-result";
 import { EmailCaptureForm } from "@/components/email-capture-form";
 import { trackQuizStart, trackQuizComplete } from "@/lib/pixel";
 
-function SunIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-      <circle cx="10" cy="10" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 type Step = "quiz" | "email" | "result";
 
 const defaultAnswers: QuizAnswers = {
@@ -52,7 +38,6 @@ export default function QuizPage() {
 
   const handleSelect = useCallback(
     (value: number | number[]) => {
-      // Fire QuizStart on first interaction
       if (!quizStartedRef.current) {
         quizStartedRef.current = true;
         trackQuizStart();
@@ -70,7 +55,6 @@ export default function QuizPage() {
     if (currentQ < questions.length - 1) {
       setCurrentQ((prev) => prev + 1);
     } else {
-      // All questions done
       trackQuizComplete();
       setStep("email");
     }
@@ -96,11 +80,10 @@ export default function QuizPage() {
   return (
     <div className="min-h-screen bg-brand-cream">
       {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-brand-cream/90 backdrop-blur-md border-b border-brand-stone/60">
+      <nav className="sticky top-0 z-50 bg-brand-cream/90 backdrop-blur-md border-b border-brand-silver/60">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2">
-            <SunIcon className="text-brand-amber" />
-            <span className="font-display text-brand-navy text-lg">{SITE.brandName}</span>
+            <span className="font-display text-brand-slate text-lg">{SITE.brandName}</span>
           </a>
         </div>
       </nav>
@@ -122,11 +105,10 @@ export default function QuizPage() {
               </AnimatePresence>
             </div>
 
-            {/* Back button */}
             {currentQ > 0 && (
               <button
                 onClick={handleBack}
-                className="mt-6 font-body text-brand-muted hover:text-brand-charcoal text-sm transition-colors cursor-pointer"
+                className="mt-6 font-body text-brand-muted hover:text-brand-body text-sm transition-colors cursor-pointer"
               >
                 &larr; Back
               </button>
@@ -137,7 +119,7 @@ export default function QuizPage() {
         {/* Email capture */}
         {step === "email" && (
           <div className="max-w-md mx-auto text-center">
-            <h2 className="font-display text-brand-navy text-2xl sm:text-3xl mb-3">
+            <h2 className="font-display text-brand-slate text-2xl sm:text-3xl mb-3">
               Your recommendation is ready
             </h2>
             <p className="font-body text-brand-muted text-base mb-8">
@@ -152,7 +134,7 @@ export default function QuizPage() {
             />
             <button
               onClick={handleSkipEmail}
-              className="mt-4 font-body text-brand-muted hover:text-brand-charcoal text-sm underline underline-offset-2 transition-colors cursor-pointer"
+              className="mt-4 font-body text-brand-muted hover:text-brand-body text-sm underline underline-offset-2 transition-colors cursor-pointer"
             >
               Skip and see my results
             </button>

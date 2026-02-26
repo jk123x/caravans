@@ -46,7 +46,7 @@ export function EmailCaptureForm({
   if (status === "success") {
     return (
       <div className="text-center py-4">
-        <p className="font-display text-brand-navy text-xl">You're in!</p>
+        <p className="font-display text-brand-slate text-xl">You're in!</p>
         <p className="font-body text-brand-muted text-sm mt-1">Check below for your next step.</p>
       </div>
     );
@@ -60,7 +60,7 @@ export function EmailCaptureForm({
           placeholder="First name"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-          className="flex-1 px-4 py-3 rounded-lg border border-brand-stone bg-white font-body text-brand-charcoal placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-amber/40 focus:border-brand-amber transition-colors"
+          className="flex-1 px-4 py-3 rounded border border-brand-silver bg-white font-body text-brand-body placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors"
         />
         <input
           type="email"
@@ -68,13 +68,13 @@ export function EmailCaptureForm({
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 px-4 py-3 rounded-lg border border-brand-stone bg-white font-body text-brand-charcoal placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-amber/40 focus:border-brand-amber transition-colors"
+          className="flex-1 px-4 py-3 rounded border border-brand-silver bg-white font-body text-brand-body placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors"
         />
       </div>
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="w-full bg-brand-amber hover:bg-brand-amber-light disabled:opacity-60 text-white font-body font-semibold text-lg px-6 py-3.5 rounded-lg transition-colors cursor-pointer"
+        className="w-full bg-brand-gold hover:bg-brand-gold/90 disabled:opacity-60 text-white font-body font-semibold text-lg px-6 py-3.5 rounded transition-colors cursor-pointer"
       >
         {status === "submitting" ? "Sending..." : buttonText}
       </button>

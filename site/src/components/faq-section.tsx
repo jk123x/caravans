@@ -30,23 +30,20 @@ export function FaqSection() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <div className="space-y-3 max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto divide-y divide-brand-silver/60">
       {faqs.map((faq, i) => (
-        <div
-          key={i}
-          className="border border-brand-stone rounded-lg overflow-hidden bg-white/60"
-        >
+        <div key={i}>
           <button
             onClick={() => setOpen(open === i ? null : i)}
-            className="w-full text-left px-5 py-4 flex items-start justify-between gap-4 hover:bg-brand-stone/30 transition-colors cursor-pointer"
+            className="w-full text-left px-1 py-5 flex items-start justify-between gap-4 hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <span className="font-body text-brand-charcoal font-medium text-base sm:text-lg leading-snug">
+            <span className="font-body text-brand-slate font-semibold text-base sm:text-lg leading-snug">
               {faq.q}
             </span>
             <motion.span
               animate={{ rotate: open === i ? 45 : 0 }}
               transition={{ duration: 0.2 }}
-              className="text-brand-amber text-2xl leading-none flex-shrink-0 mt-0.5"
+              className="text-brand-gold text-2xl leading-none flex-shrink-0 mt-0.5"
             >
               +
             </motion.span>
@@ -59,7 +56,7 @@ export function FaqSection() {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
               >
-                <p className="px-5 pb-4 text-brand-muted leading-relaxed text-[15px]">
+                <p className="px-1 pb-5 text-brand-muted leading-relaxed text-[15px]">
                   {faq.a}
                 </p>
               </motion.div>

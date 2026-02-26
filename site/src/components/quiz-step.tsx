@@ -26,7 +26,6 @@ export function QuizStep({ question, value, onSelect, onNext }: QuizStepProps) {
 
   function selectSingle(optValue: number) {
     onSelect(optValue);
-    // Auto-advance on single select after a short delay
     setTimeout(onNext, 250);
   }
 
@@ -37,7 +36,7 @@ export function QuizStep({ question, value, onSelect, onNext }: QuizStepProps) {
       exit={{ opacity: 0, x: -30 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      <h2 className="font-display text-brand-navy text-2xl sm:text-3xl mb-2">
+      <h2 className="font-display text-brand-slate text-2xl sm:text-3xl mb-2">
         {question.title}
       </h2>
       {question.subtitle && (
@@ -55,18 +54,18 @@ export function QuizStep({ question, value, onSelect, onNext }: QuizStepProps) {
             <button
               key={opt.value}
               onClick={() => isMulti ? toggleMulti(opt.value) : selectSingle(opt.value)}
-              className={`w-full text-left px-5 py-4 rounded-xl border-2 transition-all cursor-pointer font-body text-base sm:text-lg ${
+              className={`w-full text-left px-5 py-4 rounded-md border-2 transition-all cursor-pointer font-body text-base sm:text-lg ${
                 isSelected
-                  ? "border-brand-amber bg-brand-amber-pale text-brand-navy"
-                  : "border-brand-stone bg-white text-brand-charcoal hover:border-brand-amber/40"
+                  ? "border-brand-gold bg-brand-gold/10 text-brand-slate"
+                  : "border-brand-silver bg-white text-brand-body hover:border-brand-gold/40"
               }`}
             >
               <span className="flex items-center gap-3">
                 <span
                   className={`flex-shrink-0 w-6 h-6 rounded-${isMulti ? "md" : "full"} border-2 flex items-center justify-center transition-colors ${
                     isSelected
-                      ? "border-brand-amber bg-brand-amber"
-                      : "border-brand-stone"
+                      ? "border-brand-gold bg-brand-gold"
+                      : "border-brand-silver"
                   }`}
                 >
                   {isSelected && (
@@ -93,7 +92,7 @@ export function QuizStep({ question, value, onSelect, onNext }: QuizStepProps) {
           <button
             onClick={onNext}
             disabled={selectedValues.length === 0}
-            className="bg-brand-amber hover:bg-brand-amber-light disabled:opacity-40 text-white font-body font-semibold text-lg px-8 py-3.5 rounded-lg transition-colors cursor-pointer"
+            className="bg-brand-gold hover:bg-brand-gold/90 disabled:opacity-40 text-white font-body font-semibold text-lg px-8 py-3.5 rounded transition-colors cursor-pointer"
           >
             Continue
           </button>

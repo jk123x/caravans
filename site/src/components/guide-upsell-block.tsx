@@ -1,22 +1,8 @@
 import { SITE } from "@/lib/config";
 
-function CheckIcon() {
+function GoldDot() {
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      className="text-brand-amber flex-shrink-0 mt-0.5"
-    >
-      <path
-        d="M5 10l3.5 3.5L15 7"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-brand-gold mt-1.5" />
   );
 }
 
@@ -30,11 +16,11 @@ const benefits = [
 
 export function GuideUpsellBlock() {
   return (
-    <div className="bg-white rounded-xl border border-brand-stone p-6 sm:p-8">
-      <p className="text-brand-amber font-body font-semibold text-sm tracking-wide uppercase mb-2">
+    <div className="bg-white rounded-md p-6 sm:p-8">
+      <p className="label-caps mb-2">
         Get the complete guide
       </p>
-      <h3 className="font-display text-brand-navy text-2xl mb-2">
+      <h3 className="font-display text-brand-slate text-2xl mb-2">
         Everything you need to buy with confidence
       </h3>
       <p className="font-body text-brand-muted text-[15px] mb-5">
@@ -43,16 +29,16 @@ export function GuideUpsellBlock() {
       <ul className="space-y-2.5 mb-6">
         {benefits.map((b) => (
           <li key={b} className="flex items-start gap-2.5">
-            <CheckIcon />
-            <span className="font-body text-brand-charcoal text-[15px]">{b}</span>
+            <GoldDot />
+            <span className="font-body text-brand-body text-[15px]">{b}</span>
           </li>
         ))}
       </ul>
       <a
         href={SITE.checkoutUrl}
-        className="inline-flex items-center gap-2 bg-brand-amber hover:bg-brand-amber-light text-white font-body font-semibold text-lg px-8 py-4 rounded-lg transition-colors shadow-lg shadow-brand-amber/20 w-full justify-center"
+        className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-body font-semibold text-lg px-8 py-4 rounded transition-colors w-full justify-center"
       >
-        Get the Guide &mdash; ${SITE.price}
+        Get the Guide — ${SITE.price}
       </a>
       <p className="text-brand-muted text-xs font-body text-center mt-3">
         Instant PDF download. Prints beautifully on A4.
