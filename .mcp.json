@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-p", "claude-talk-to-figma-mcp@latest", "claude-talk-to-figma-mcp-server"],
       "env": {
-        "WEBSOCKET_CHANNEL_ID": "0pxtky0d"
+        "WEBSOCKET_CHANNEL_ID": "6wvl2hiw"
       }
     }
   }

@@ -1,93 +1,145 @@
 import WebSocket from 'ws';
-import { randomUUID } from 'crypto';
-import { createInterface } from 'readline';
+import { randomUUID } from 'node:crypto';
 
-const CHANNEL = process.env.FIGMA_CHANNEL || 'ggbybgir';
-const WS_URL = 'ws://localhost:3055';
+const CHANNEL = process.env.FIGMA_CHANNEL || '6wvl2hiw';
+const PORT = process.env.FIGMA_PORT || 3055;
+const COMMAND = process.argv[2];
+const PARAMS = process.argv[3] ? JSON.parse(process.argv[3]) : {};
 
-let ws;
+if (!COMMAND) {
+  console.error('Usage: node figma-bridge.mjs <command> [paramsJSON]');
+  process.exit(1);
+}
+
+const pendingRequests = new Map();
 let currentChannel = null;
-const pending = new Map();
 
 function connect() {
   return new Promise((resolve, reject) => {
-    ws = new WebSocket(WS_URL);
-    ws.on('open', () => resolve());
-    ws.on('error', (err) => reject(err));
-    ws.on('message', (raw) => {
-      const data = JSON.parse(raw);
+    const ws = new WebSocket(`ws://localhost:${PORT}`);
+    const timeout = setTimeout(() => { ws.terminate(); reject(new Error('Connection timeout')); }, 10000);
+    ws.on('open', () => { clearTimeout(timeout); resolve(ws); });
+    ws.on('error', (err) => { clearTimeout(timeout); reject(err); });
+  });
+}
 
-      // Ignore our own echoed messages
-      if (data.type === 'broadcast' && data.sender === 'You') return;
+function setupMessageHandler(ws) {
+  ws.on('message', (data) => {
+    try {
+      const json = JSON.parse(data);
 
-      // Handle responses from Figma (sender is "User")
-      if (data.type === 'broadcast' && data.sender === 'User') {
-        const msg = data.message;
-        if (msg?.id && pending.has(msg.id)) {
-          const req = pending.get(msg.id);
-          clearTimeout(req.timeout);
-          pending.delete(msg.id);
-          if (msg.error) {
-            req.reject(new Error(msg.error));
-          } else {
-            req.resolve(msg.result ?? msg);
+      // Join acknowledgment
+      if (json.type === 'join_ack') {
+        currentChannel = CHANNEL;
+        for (const [id, req] of pendingRequests.entries()) {
+          if (req._isJoin) {
+            clearTimeout(req.timeout);
+            pendingRequests.delete(id);
+            req.resolve({ type: 'join_ack' });
+            return;
           }
-          return;
+        }
+        return;
+      }
+
+      // Progress updates - extend timeout and log
+      if (json.type === 'progress_update') {
+        const progressData = json.message?.data || json.data;
+        const requestId = json.id || progressData?.commandId || '';
+        if (requestId && pendingRequests.has(requestId)) {
+          const req = pendingRequests.get(requestId);
+          req.lastActivity = Date.now();
+          clearTimeout(req.timeout);
+          req.timeout = setTimeout(() => {
+            pendingRequests.delete(requestId);
+            req.reject(new Error('Timeout waiting for chunked response'));
+          }, 120000);
+          process.stderr.write(`Progress: ${progressData?.progress || 0}% - ${progressData?.message || ''}\n`);
+        }
+        return;
+      }
+
+      const msg = json.message;
+      if (!msg) return;
+
+      // Skip command echoes
+      if (msg.command) return;
+
+      // Match response by ID
+      if (msg.id && pendingRequests.has(msg.id)) {
+        const req = pendingRequests.get(msg.id);
+        clearTimeout(req.timeout);
+        pendingRequests.delete(msg.id);
+        const error = msg.error ?? (msg.result && msg.result.error);
+        if (error) {
+          req.reject(new Error(String(error)));
+        } else {
+          req.resolve(msg.result ?? msg);
         }
       }
-
-      // Handle system messages (join confirmations)
-      if (data.type === 'system' && data.message?.id && pending.has(data.message.id)) {
-        const req = pending.get(data.message.id);
-        clearTimeout(req.timeout);
-        pending.delete(data.message.id);
-        req.resolve(data.message.result ?? data.message);
-      }
-    });
+    } catch (e) {
+      process.stderr.write(`Parse error: ${e.message}\n`);
+    }
   });
 }
 
-function joinChannel(channel) {
+function sendCommand(ws, command, params = {}, timeoutMs = 120000) {
   return new Promise((resolve, reject) => {
     const id = randomUUID();
-    const timeout = setTimeout(() => { pending.delete(id); reject(new Error('join timeout')); }, 10000);
-    pending.set(id, { resolve, reject, timeout });
-    ws.send(JSON.stringify({ type: 'join', channel, id }));
-  });
-}
+    const isJoin = command === 'join';
 
-function sendCommand(command, params = {}, timeoutMs = 60000) {
-  return new Promise((resolve, reject) => {
-    const id = randomUUID();
-    const timeout = setTimeout(() => { pending.delete(id); reject(new Error(`timeout: ${command}`)); }, timeoutMs);
-    pending.set(id, { resolve, reject, timeout });
-    ws.send(JSON.stringify({
-      type: 'message',
-      channel: currentChannel,
+    const request = {
+      id,
+      type: isJoin ? 'join' : 'message',
+      ...(isJoin ? { channel: params.channel } : { channel: currentChannel }),
       message: { id, command, params: { ...params, commandId: id } }
-    }));
+    };
+
+    const timeout = setTimeout(() => {
+      pendingRequests.delete(id);
+      reject(new Error(`Timeout after ${timeoutMs / 1000}s`));
+    }, timeoutMs);
+
+    pendingRequests.set(id, { resolve, reject, timeout });
+    ws.send(JSON.stringify(request));
   });
 }
 
 async function main() {
-  await connect();
-  console.error('[bridge] Connected to relay');
+  const ws = await connect();
+  setupMessageHandler(ws);
 
-  await joinChannel(CHANNEL);
+  // Join channel
+  const joinId = randomUUID();
+  const joinPromise = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      pendingRequests.delete(joinId);
+      reject(new Error('Join timeout'));
+    }, 12000);
+    pendingRequests.set(joinId, { resolve, reject, timeout, _isJoin: true });
+  });
+  ws.send(JSON.stringify({
+    id: joinId,
+    type: 'join',
+    channel: CHANNEL,
+    message: { id: joinId, command: 'join', params: { channel: CHANNEL, commandId: joinId } }
+  }));
+  await joinPromise;
   currentChannel = CHANNEL;
-  console.error(`[bridge] Joined channel: ${CHANNEL}`);
 
-  const rl = createInterface({ input: process.stdin });
+  // Verify with ping
+  await sendCommand(ws, 'ping', {}, 12000);
+  process.stderr.write(`Connected on channel ${CHANNEL}\n`);
 
-  for await (const line of rl) {
-    try {
-      const { command, params, timeout } = JSON.parse(line);
-      const result = await sendCommand(command, params || {}, timeout || 60000);
-      console.log(JSON.stringify({ ok: true, result }));
-    } catch (err) {
-      console.log(JSON.stringify({ ok: false, error: err.message }));
-    }
-  }
+  // Send actual command
+  const result = await sendCommand(ws, COMMAND, PARAMS, 120000);
+  console.log(JSON.stringify(result, null, 2));
+
+  ws.close();
+  process.exit(0);
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+main().catch(err => {
+  console.error('Error:', err.message);
+  process.exit(1);
+});

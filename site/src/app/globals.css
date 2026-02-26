@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-navy: #1a2e3b;
-  --color-brand-navy-light: #243d50;
-  --color-brand-amber: #c67c1b;
-  --color-brand-amber-light: #e39a2e;
-  --color-brand-amber-pale: #fdf3e0;
-  --color-brand-cream: #faf8f3;
-  --color-brand-stone: #ede8de;
-  --color-brand-charcoal: #2c3338;
+  --color-brand-slate: #3d4f5f;
+  --color-brand-gold: #d4a017;
+  --color-brand-cream: #f2ede4;
+  --color-brand-cream-light: #f5f3ee;
+  --color-brand-silver: #d9d2c7;
+  --color-brand-body: #2d2d2d;
   --color-brand-muted: #6b7280;
   --color-brand-red: #b84233;
+  --color-brand-weekender: #5b7a5e;
+  --color-brand-tourer: #4a7fa5;
+  --color-brand-fulltimer: #a85c3b;
 
-  --font-display: var(--font-young-serif);
-  --font-body: var(--font-outfit);
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-source-serif);
 }
 
 *,
@@ -30,12 +31,22 @@ html {
 
 body {
   background: var(--color-brand-cream);
-  color: var(--color-brand-charcoal);
-  font-family: var(--font-body), system-ui, sans-serif;
-  line-height: 1.6;
+  color: var(--color-brand-body);
+  font-family: var(--font-body), "Georgia", "Times New Roman", serif;
+  font-size: 15px;
+  line-height: 1.53;
 }
 
 ::selection {
-  background: var(--color-brand-amber-pale);
-  color: var(--color-brand-navy);
+  background: #e8dfd2;
+  color: var(--color-brand-slate);
+}
+
+.label-caps {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--color-brand-gold);
 }

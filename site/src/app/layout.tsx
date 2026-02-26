@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Young_Serif, Outfit } from "next/font/google";
+import { Playfair_Display, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { SITE } from "@/lib/config";
 
-const youngSerif = Young_Serif({
-  weight: "400",
-  variable: "--font-young-serif",
+const playfair = Playfair_Display({
+  weight: ["400", "700"],
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const sourceSerif = Source_Serif_4({
+  weight: ["400", "600"],
+  variable: "--font-source-serif",
   subsets: ["latin"],
   display: "swap",
 });
@@ -35,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${youngSerif.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${sourceSerif.variable}`}>
       <body>
         {children}
 
