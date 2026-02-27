@@ -1,6 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SITE } from "@/lib/config";
 
 const KIT_BASE = "https://api.kit.com/v4";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const VALID_FORM_IDS = new Set<string>(Object.values(SITE.kitFormIds));
+
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 5;
+const rateLimitMap = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const timestamps = rateLimitMap.get(ip) ?? [];
+  const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+
+  if (recent.length >= RATE_LIMIT_MAX) {
+    rateLimitMap.set(ip, recent);
+    return true;
+  }
+
+  recent.push(now);
+  rateLimitMap.set(ip, recent);
+  return false;
+}
+
+function getClientIp(request: NextRequest): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
+function resolveTagsForForm(
+  formId: string,
+  clientTags: unknown
+): string[] {
+  const config = SITE.kitFormTags[formId];
+  if (!config) return [];
+
+  if (config.fixed) return config.fixed;
+
+  if (config.allowed && Array.isArray(clientTags)) {
+    return clientTags.filter(
+      (t): t is string => typeof t === "string" && config.allowed!.test(t)
+    );
+  }
+
+  return [];
+}
 
 function kitHeaders(apiKey: string) {
   return {
@@ -68,8 +118,15 @@ async function applyTags(apiKey: string, email: string, tagNames: string[]) {
 }
 
 export async function POST(request: NextRequest) {
-  const apiKey = process.env.KIT_API_KEY;
+  const ip = getClientIp(request);
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429 }
+    );
+  }
 
+  const apiKey = process.env.KIT_API_KEY;
   if (!apiKey) {
     console.error("KIT_API_KEY not set");
     return NextResponse.json(
@@ -78,22 +135,44 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { email, firstName, formId, tags } = await request.json();
-
-  if (!email || !formId) {
-    return NextResponse.json(
-      { error: "Email and formId are required" },
-      { status: 400 }
-    );
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  const { email, firstName, formId, tags: clientTags } = body as {
+    email?: string;
+    firstName?: string;
+    formId?: string;
+    tags?: unknown;
+  };
+
+  if (!email || typeof email !== "string" || !EMAIL_RE.test(email)) {
+    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+  }
+
+  if (!formId || typeof formId !== "string" || !VALID_FORM_IDS.has(formId)) {
+    return NextResponse.json({ error: "Invalid form" }, { status: 400 });
+  }
+
+  const tags = resolveTagsForForm(formId, clientTags);
+
   try {
-    await createSubscriber(apiKey, email, firstName);
+    await createSubscriber(
+      apiKey,
+      email,
+      typeof firstName === "string" ? firstName : undefined
+    );
     await addToForm(apiKey, formId, email);
-    await applyTags(apiKey, email, tags || []);
+    await applyTags(apiKey, email, tags);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Kit API error:", err);
-    return NextResponse.json({ error: "Failed to subscribe" }, { status: 502 });
+    return NextResponse.json(
+      { error: "Failed to subscribe" },
+      { status: 502 }
+    );
   }
 }
