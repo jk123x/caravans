@@ -1,7 +1,71 @@
+import Script from "next/script";
+import Link from "next/link";
 import { SITE } from "@/lib/config";
 import { GuideMockup } from "@/components/guide-mockup";
 import { FaqSection } from "@/components/faq-section";
 import { AnimatedSection } from "@/components/animated-section";
+
+const faqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "I know nothing about solar. Is this guide really for beginners?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "That's exactly who it's for. You don't need to understand electricity or have any technical background. The guide explains every concept in plain language and walks you through each decision step by step. If you can follow a recipe, you can follow this guide.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Will this tell me how to install the system myself?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. This guide helps you decide what to buy and how to size your system correctly. It's a decision-making tool, not an installation manual. Once you know exactly what you need, you can either hire a qualified installer (you'll know exactly what to brief them on) or follow manufacturer installation guides with confidence.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "I already have a basic solar setup. Is this still useful?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "If your current setup isn't keeping up, this guide will help you figure out exactly what's undersized and what to upgrade. The power audit worksheet and system sizing tools work whether you're starting from scratch or upgrading an existing system.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why $49? Can't I find this information for free?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "You can find pieces of it across hundreds of forum posts, YouTube videos, and brand-specific guides that are trying to sell you their products. This guide saves you weeks of research and gives you brand-neutral recommendations, ready-to-use shopping lists, and sizing worksheets all in one place. It's less than the cost of a single solar panel.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is this Australian-specific?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Australian sun hours, Australian brands (REDARC, Enerdrive, Victron, Renogy), Australian retailers, and Australian electrical standards. The system sizing accounts for conditions across different parts of Australia.",
+      },
+    },
+  ],
+};
+
+const productStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "The Beginner's Guide to Caravan Solar",
+  description:
+    "Clear recommendations, brand comparisons, shopping lists, and sizing worksheets for Australian caravanners. Covers weekender, tourer, and full-timer setups.",
+  offers: {
+    "@type": "Offer",
+    price: "49",
+    priceCurrency: "AUD",
+    availability: "https://schema.org/InStock",
+    url: "https://caravansolar.au",
+  },
+};
 
 const features = [
   {
@@ -151,13 +215,19 @@ export default function Home() {
                 PDF download. Prints on A4.
               </p>
             </div>
-            <div className="text-center mt-4">
-              <a
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-4">
+              <Link
                 href={SITE.quizUrl}
                 className="inline-flex items-center gap-1.5 text-brand-gold hover:text-brand-gold/80 font-body font-semibold text-base transition-colors"
               >
-                Not sure what you need? Take the 2-minute quiz →
-              </a>
+                Not sure what you need? Take the quiz →
+              </Link>
+              <Link
+                href="/free-guide"
+                className="inline-flex items-center gap-1.5 text-brand-gold/70 hover:text-brand-gold font-body text-sm transition-colors"
+              >
+                Or grab the free power audit worksheet
+              </Link>
             </div>
           </AnimatedSection>
         </div>
@@ -399,14 +469,33 @@ export default function Home() {
             <span className="font-display text-brand-slate text-lg">
               {SITE.brandName}
             </span>
-            <p className="text-brand-muted/60 text-sm font-body text-center sm:text-right">
-              This guide helps you make purchasing decisions. It is not
-              electrical advice. Always consult a qualified electrician for
-              installation.
-            </p>
+            <nav className="flex items-center gap-5">
+              <Link href="/quiz" className="font-body text-brand-muted hover:text-brand-body text-sm transition-colors">
+                Solar Quiz
+              </Link>
+              <Link href="/free-guide" className="font-body text-brand-muted hover:text-brand-body text-sm transition-colors">
+                Free Power Audit
+              </Link>
+            </nav>
           </div>
+          <p className="text-brand-muted/60 text-xs font-body text-center mt-6">
+            This guide helps you make purchasing decisions. It is not
+            electrical advice. Always consult a qualified electrician for
+            installation.
+          </p>
         </div>
       </footer>
+
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+      />
+      <Script
+        id="product-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productStructuredData) }}
+      />
     </div>
   );
 }

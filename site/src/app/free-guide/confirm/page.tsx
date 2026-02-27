@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
+import Link from "next/link";
 import { SITE } from "@/lib/config";
 import { GuideUpsellBlock } from "@/components/guide-upsell-block";
+
+export const metadata: Metadata = {
+  title: "Download Your Power Audit | Caravan Solar",
+  robots: { index: false, follow: true },
+};
 
 function DownloadIcon() {
   return (
@@ -16,9 +23,9 @@ export default function FreeGuideConfirmPage() {
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-brand-cream/90 backdrop-blur-md border-b border-brand-silver/60">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="font-display text-brand-slate text-lg">{SITE.brandName}</span>
-          </a>
+          </Link>
         </div>
       </nav>
 

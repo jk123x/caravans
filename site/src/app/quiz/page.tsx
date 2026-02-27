@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import Link from "next/link";
 import { AnimatePresence } from "framer-motion";
 import { SITE } from "@/lib/config";
 import {
@@ -82,13 +83,15 @@ export default function QuizPage() {
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-brand-cream/90 backdrop-blur-md border-b border-brand-silver/60">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="font-display text-brand-slate text-lg">{SITE.brandName}</span>
-          </a>
+          </Link>
         </div>
       </nav>
 
       <div className="max-w-2xl mx-auto px-5 sm:px-8 py-8 sm:py-14">
+        <h1 className="sr-only">What Caravan Solar Setup Do You Need?</h1>
+
         {/* Quiz questions */}
         {step === "quiz" && (
           <>

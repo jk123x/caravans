@@ -1,6 +1,13 @@
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import fs from "fs";
 import path from "path";
 import { GuideRenderer } from "@/components/guide-renderer";
+
+export const metadata: Metadata = {
+  title: "Preview | Caravan Solar",
+  robots: { index: false, follow: false },
+};
 
 const GUIDE_DIR = path.join(process.cwd(), "..", "guide-content");
 
@@ -21,6 +28,10 @@ const sections = [
 ];
 
 export default function PreviewPage() {
+  if (process.env.NODE_ENV === "production") {
+    redirect("/");
+  }
+
   const content = sections.map((s) => {
     const filePath = path.join(GUIDE_DIR, s.file);
     const md = fs.readFileSync(filePath, "utf-8");

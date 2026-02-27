@@ -26,10 +26,6 @@ export function trackLead() {
   fbq("track", "Lead");
 }
 
-export function trackInitiateCheckout() {
-  fbq("track", "InitiateCheckout");
-}
-
 export function trackPurchase() {
   fbq("track", "Purchase", { currency: "AUD", value: 49 });
 }

@@ -19,6 +19,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://caravansolar.au"),
   title: `${SITE.tagline} | ${SITE.brandName}`,
   description:
     "Stop guessing what solar setup your caravan needs. Clear recommendations, brand comparisons, shopping lists, and sizing worksheets. Made for Australian caravanners.",
@@ -27,6 +28,9 @@ export const metadata: Metadata = {
     description:
       "The $49 guide that tells you exactly what to buy for your caravan solar setup. No jargon. No theory. Just clear recommendations.",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
@@ -38,6 +42,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${sourceSerif.variable}`}>
       <body>
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Caravan Solar",
+              url: "https://caravansolar.au",
+            }),
+          }}
+        />
         {children}
 
         {/* Plausible Analytics */}
