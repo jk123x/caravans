@@ -31,9 +31,20 @@ export default function SuccessPage() {
         <h1 className="font-display text-brand-slate text-3xl sm:text-4xl leading-[1.15] mb-4">
           You're all set
         </h1>
-        <p className="font-body text-brand-muted text-lg leading-relaxed max-w-md mx-auto mb-10">
-          Your copy of <strong className="text-brand-body">{SITE.tagline}</strong> is ready to download. Check your email for the receipt and download link.
+        <p className="font-body text-brand-muted text-lg leading-relaxed max-w-md mx-auto mb-8">
+          Your copy of <strong className="text-brand-body">{SITE.tagline}</strong> is ready.
         </p>
+
+        <a
+          href={SITE.guideDownloadUrl}
+          download
+          className="inline-flex items-center gap-2.5 bg-brand-gold text-white font-body font-semibold text-lg px-8 py-4 rounded-md hover:bg-brand-gold/90 transition-colors mb-10"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
+            <path d="M10 3v10m0 0l-4-4m4 4l4-4M3 17h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Download your guide (PDF)
+        </a>
 
         {/* What to do next */}
         <div className="bg-white rounded-md p-6 sm:p-8 text-left mb-8">

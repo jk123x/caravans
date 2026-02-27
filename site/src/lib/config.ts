@@ -3,13 +3,14 @@ export const SITE = {
   tagline: "The Beginner's Guide to Caravan Solar",
   price: 49,
   currency: "AUD",
-  checkoutUrl: "#", // Stripe Payment Link goes here
+  checkoutUrl: "https://buy.stripe.com/fZu8wO5QH6HRelKdfDeME00",
   quizUrl: "/quiz",
   chapter0DownloadUrl: "/downloads/caravan-solar-chapter-0.pdf",
-  metaPixelId: "", // from FB Business Manager
+  guideDownloadUrl: "/downloads/caravan-solar-guide.pdf",
+  metaPixelId: "2399648783813528",
   plausibleDomain: "caravansolar.au",
   kitFormIds: {
-    quiz: "", // from Kit
-    chapter0: "", // from Kit
+    quiz: "9141411",
+    chapter0: "9141413",
   },
 } as const;
