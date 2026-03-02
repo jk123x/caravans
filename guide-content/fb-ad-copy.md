@@ -36,7 +36,7 @@
 
 ### B1: Direct Purchase
 
-**Primary text:** What if a mate who knew solar just told you exactly what to buy for your van? What panels, what battery, what regulator, and why. No jargon, no sales pitch.
+**Primary text:** What if a mate who knew solar just told you exactly what to buy for your van? What panels, what battery, what size, and why. No jargon. No kickbacks.
 
 **Headline:** Like Having a Mate Who Knows Solar
 
@@ -52,11 +52,11 @@
 
 ### B3: Chapter 0 Download
 
-**Primary text:** What if a mate who knew solar sat you down and explained the basics over a cuppa? No jargon, no upselling, just a straight answer on what solar does, what it costs, and how to figure out what you need. That's this free guide.
+**Primary text:** What if a mate who knew solar sat you down and explained the basics over a cuppa? No jargon, just straight advice on what solar does, what it costs, and how to figure out what you need. That's this free guide.
 
 **Headline:** The Solar Basics, From a Mate
 
-**Description:** Free download. Includes a power audit worksheet to work out what you need.
+**Description:** Free download. Includes a simple worksheet to work out what you actually need.
 
 ---
 
@@ -100,7 +100,7 @@
 
 ### D2: Quiz Funnel
 
-**Primary text:** "I don't want to read a textbook. I just want to know what setup I need." Fair enough. Answer 8 questions about how you travel and what you run in your van. We'll tell you what tier you're in and what to look for.
+**Primary text:** "I don't want to read a textbook. I just want to know what setup I need." Fair enough. Answer 8 questions about how you travel and what you run in your van. We'll tell you exactly what size system you need and what to look for.
 
 **Headline:** Skip the Research. Take the Quiz.
 
@@ -112,4 +112,4 @@
 
 **Headline:** One Number. That's All You Need.
 
-**Description:** Free guide with a power audit worksheet. Find your number in 10 minutes.
+**Description:** Free guide with a simple power worksheet. Find your number in 10 minutes.
