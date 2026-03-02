@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { SITE } from "@/lib/config";
 
 const KIT_BASE = "https://api.kit.com/v4";
 
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
   };
 
   try {
-    await fetch(`${KIT_BASE}/subscribers`, {
+    const subRes = await fetch(`${KIT_BASE}/subscribers`, {
       method: "POST",
       headers: kitHeaders,
       body: JSON.stringify({
@@ -75,23 +76,16 @@ export async function POST(request: NextRequest) {
       }),
     });
 
-    const tagsRes = await fetch(`${KIT_BASE}/tags?per_page=1000`, {
-      headers: { "X-Kit-Api-Key": kitApiKey },
-    });
-
-    if (tagsRes.ok) {
-      const { tags } = await tagsRes.json();
-      const purchased = tags.find(
-        (t: { name: string }) => t.name === "purchased"
-      );
-      if (purchased) {
-        await fetch(`${KIT_BASE}/tags/${purchased.id}/subscribers`, {
-          method: "POST",
-          headers: kitHeaders,
-          body: JSON.stringify({ email_address: email }),
-        });
-      }
+    if (!subRes.ok) {
+      throw new Error(`Create subscriber failed (${subRes.status})`);
     }
+
+    const { subscriber } = await subRes.json();
+
+    await fetch(
+      `${KIT_BASE}/forms/${SITE.kitFormIds.purchase}/subscribers/${subscriber.id}`,
+      { method: "POST", headers: kitHeaders }
+    );
   } catch (err) {
     console.error("Kit API error in webhook:", err);
   }

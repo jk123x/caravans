@@ -79,11 +79,10 @@ async function createSubscriber(
   return res.json();
 }
 
-async function addToForm(apiKey: string, formId: string, email: string) {
-  const res = await fetch(`${KIT_BASE}/forms/${formId}/subscribers`, {
+async function addToForm(apiKey: string, formId: string, subscriberId: number) {
+  const res = await fetch(`${KIT_BASE}/forms/${formId}/subscribers/${subscriberId}`, {
     method: "POST",
     headers: kitHeaders(apiKey),
-    body: JSON.stringify({ email_address: email }),
   });
   if (!res.ok) {
     const body = await res.text();
@@ -160,12 +159,12 @@ export async function POST(request: NextRequest) {
   const tags = resolveTagsForForm(formId, clientTags);
 
   try {
-    await createSubscriber(
+    const { subscriber } = await createSubscriber(
       apiKey,
       email,
       typeof firstName === "string" ? firstName : undefined
     );
-    await addToForm(apiKey, formId, email);
+    await addToForm(apiKey, formId, subscriber.id);
     await applyTags(apiKey, email, tags);
     return NextResponse.json({ success: true });
   } catch (err) {

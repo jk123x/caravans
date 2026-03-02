@@ -1573,9 +1573,9 @@ async function buildBackCover(pi) {
   ), { size: 16, color: { ...COL.white, a: 0.75 }, lineH: 26 });
 
   // Resources recap
-  let y = 310;
+  let y = 290;
   await txt(f.id, M, y, 'YOUR RESOURCES', { size: 11, style: 'SemiBold', color: COL.wattle, spacing: 3 });
-  y += 28;
+  y += 26;
 
   const resources = [
     ['Power Audit Worksheet', 'Work out your daily watt-hours'],
@@ -1589,14 +1589,14 @@ async function buildBackCover(pi) {
   for (const [title, desc] of resources) {
     await txt(f.id, M + 2, y, '\u2022', { size: 14, color: COL.wattle });
     await txt(f.id, M + 18, y, title, { size: 14, style: 'SemiBold', color: COL.white });
-    await txt(f.id, M + 18, y + 20, desc, { size: 13, color: { ...COL.white, a: 0.55 } });
-    y += 46;
+    await txt(f.id, M + 18, y + 18, desc, { size: 13, color: { ...COL.white, a: 0.55 } });
+    y += 42;
   }
 
   // CTA section
-  y += 20;
+  y += 16;
   await rect(f.id, M, y, CW, 1, { ...COL.wattle, a: 0.3 });
-  y += 24;
+  y += 20;
 
   await txt(f.id, M, y, 'WHAT TO DO NEXT', { size: 11, style: 'SemiBold', color: COL.wattle, spacing: 3 });
   y += 28;

@@ -12,10 +12,11 @@ export const SITE = {
   kitFormIds: {
     quiz: "9141411",
     chapter0: "9141413",
+    purchase: "9150036",
   },
   kitFormTags: {
     "9141411": {
-      allowed: /^(source:quiz|tier:(basic|mid|full)|concern:(wasting-money|not-enough-power|wiring|overwhelmed))$/,
+      allowed: /^(source:quiz|tier:(weekender|tourer|fulltimer)|concern:(wasting-money|not-enough-power|wiring|overwhelmed))$/,
     },
     "9141413": {
       fixed: ["source:chapter0"],
