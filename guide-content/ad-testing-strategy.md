@@ -7,20 +7,18 @@
 | **Channel** | Meta only |
 | **Budget** | $30/day for 14 days ($420 total) |
 | **Campaigns** | 3: Direct purchase + Chapter 0 + Quiz ($10/day each) |
-| **Angles** | B "Mate Who Knows" + D "Just Tell Me" |
-| **Ads** | 6 total (2 per campaign, 1 per angle) |
+| **Angle** | D "Just Tell Me" only (B "Mate Who Knows" shelved for Phase 2) |
+| **Ads** | 3 total (1 per campaign) |
 | **Targeting** | 55-75, Australia, caravan/camping/solar interests |
+| **Image** | V2B (dark slate) |
 
-## Ad Copy Variants (from fb-ad-copy.md)
+## Ad Copy Variants (from ad-copy-paste.txt)
 
-| Ad | Angle | Funnel | Destination |
-|---|---|---|---|
-| B1 | Mate Who Knows | Direct purchase | caravansolar.au |
-| D1 | Just Tell Me | Direct purchase | caravansolar.au |
-| B2 | Mate Who Knows | Quiz | caravansolar.au/quiz |
-| D2 | Just Tell Me | Quiz | caravansolar.au/quiz |
-| B3 | Mate Who Knows | Chapter 0 | caravansolar.au/free-guide |
-| D3 | Just Tell Me | Chapter 0 | caravansolar.au/free-guide |
+| Ad | Funnel | Destination |
+|---|---|---|
+| D1 | Direct purchase | caravansolar.au |
+| D2 | Quiz | caravansolar.au/quiz |
+| D3 | Chapter 0 | caravansolar.au/free-guide |
 
 ## UTM Template
 
@@ -28,28 +26,31 @@
 ?utm_source=facebook&utm_medium=paid&utm_campaign=demand-test-v1&utm_content={ad-name}
 ```
 
-Ad name values: `b1-mate-direct`, `d1-tellme-direct`, `b2-mate-quiz`, `d2-tellme-quiz`, `b3-mate-ch0`, `d3-tellme-ch0`
+Ad name values: `d1-tellme-direct`, `d2-tellme-quiz`, `d3-tellme-ch0`
 
 ## Campaign Setup
 
-### Campaign 1: Direct Purchase ($10/day)
+### Campaign 1: Caravan Direct ($10/day)
 - **Objective**: Sales, optimise for Purchase
-- **Ads**: B1 + D1
+- **Ad**: D1
 - **CTA**: Learn More
-- **Destination**: `caravansolar.au?utm_source=facebook&utm_medium=paid&utm_campaign=demand-test-v1&utm_content={ad-name}`
+- **Destination**: `caravansolar.au?utm_source=facebook&utm_medium=paid&utm_campaign=demand-test-v1&utm_content=d1-tellme-direct`
 - **Fallback**: If 0 conversions after 4 days, switch to Landing Page Views objective
 
-### Campaign 2: Chapter 0 Download ($10/day)
+### Campaign 2: Caravan Chapter 0 ($10/day)
 - **Objective**: Leads, optimise for Lead event
-- **Ads**: B3 + D3
-- **CTA**: Download or Learn More
-- **Destination**: `caravansolar.au/free-guide?utm_source=...`
+- **Ad**: D3
+- **CTA**: Download
+- **Destination**: `caravansolar.au/free-guide?utm_source=facebook&utm_medium=paid&utm_campaign=demand-test-v1&utm_content=d3-tellme-ch0`
 
-### Campaign 3: Quiz ($10/day)
+### Campaign 3: Caravan Quiz ($10/day)
 - **Objective**: Leads, optimise for Lead event
-- **Ads**: B2 + D2
+- **Ad**: D2
 - **CTA**: Learn More
-- **Destination**: `caravansolar.au/quiz?utm_source=...`
+- **Destination**: `caravansolar.au/quiz?utm_source=facebook&utm_medium=paid&utm_campaign=demand-test-v1&utm_content=d2-tellme-quiz`
+
+### Campaign Objective Fix (4 March)
+Originally all 3 campaigns were set to Sales/Purchase because Meta wouldn't allow changing objective after publish. Duplicated quiz + chapter 0 campaigns with correct Leads objective. Needs a full rewire check to confirm everything is connected correctly.
 
 ### Shared Settings
 - **Placements**: Advantage+
@@ -57,7 +58,7 @@ Ad name values: `b1-mate-direct`, `d1-tellme-direct`, `b2-mate-quiz`, `d2-tellme
 - **Age**: 55-75
 - **Interests** (OR): Caravanning, Caravan, Camping, RV, WikiCamps Australia, Jayco, REDARC, Solar panels, Motorhome, Free camping, Grey nomad
 - **Exclusions**: Custom Audience from Pixel (site visitors)
-- **Creative**: Same single image across all 6 ads
+- **Creative**: V2B image (dark slate) across all 3 ads
 
 ## Success Metrics
 
