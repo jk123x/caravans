@@ -18,7 +18,6 @@ export function EmailCaptureForm({
   subtext = "No spam, unsubscribe anytime.",
   onSuccess,
 }: EmailCaptureFormProps) {
-  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
@@ -30,7 +29,7 @@ export function EmailCaptureForm({
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, firstName, formId, tags }),
+        body: JSON.stringify({ email, formId, tags }),
       });
 
       if (!res.ok) throw new Error("Subscribe failed");
@@ -54,23 +53,14 @@ export function EmailCaptureForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="flex flex-col sm:flex-row gap-3">
-        <input
-          type="text"
-          placeholder="First name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          className="flex-1 px-4 py-3 rounded border border-brand-silver bg-white font-body text-brand-body placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors"
-        />
-        <input
-          type="email"
-          required
-          placeholder="Email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 px-4 py-3 rounded border border-brand-silver bg-white font-body text-brand-body placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors"
-        />
-      </div>
+      <input
+        type="email"
+        required
+        placeholder="Email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full px-4 py-3 rounded border border-brand-silver bg-white font-body text-brand-body placeholder:text-brand-muted/50 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 focus:border-brand-gold transition-colors"
+      />
       <button
         type="submit"
         disabled={status === "submitting"}

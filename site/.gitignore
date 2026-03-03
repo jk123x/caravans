@@ -40,5 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# paid content
-/private/
+# paid content — page exports only (PDF must be deployed for download API)
+/private/page-exports/
