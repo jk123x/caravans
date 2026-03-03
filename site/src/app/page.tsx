@@ -58,6 +58,7 @@ const productStructuredData = {
   name: "The Beginner's Guide to Caravan Solar",
   description:
     "Clear recommendations, brand comparisons, shopping lists, and sizing worksheets for Australian caravanners. Covers weekender, tourer, and full-timer setups.",
+  image: "https://caravansolar.au/og-image.png",
   offers: {
     "@type": "Offer",
     price: "49",
@@ -406,8 +407,9 @@ export default function Home() {
           <AnimatedSection delay={0.1}>
             <p className="font-body text-white/70 text-lg mb-8 max-w-xl mx-auto leading-relaxed">
               For ${SITE.price}, you get the complete guide with worksheets,
-              brand comparisons, shopping lists, and system sizing tools. One bad
-              purchasing decision costs 10–40x more than this guide.
+              brand comparisons, shopping lists, and system sizing tools. One
+              wrong decision on batteries alone can cost more than this
+              guide ten times over.
             </p>
           </AnimatedSection>
           <AnimatedSection delay={0.15}>

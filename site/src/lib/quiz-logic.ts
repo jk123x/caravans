@@ -198,7 +198,7 @@ const concernNotes: Record<number, string> = {
 // --- Existing setup copy ---
 
 const existingSetupNotes: Record<number, string> = {
-  0: "You're starting fresh, which is actually the easiest position. No compromises, no working around old gear.",
+  0: "You're starting fresh, which is the easiest position. No compromises, no working around old gear.",
   1: "Your factory setup is a starting point. The guide shows you what to keep and what to replace.",
   2: "You've got some pieces in place. The guide helps you identify the gaps and fill them properly.",
   3: "If your system isn't performing, the guide's sizing worksheets will show you exactly what's undersized.",

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OG Image — Caravan Solar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+  }
+
+  body {
+    background: #3d4f5f;
+    position: relative;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+
+  /* Subtle vignette */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.18) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: #d4a017;
+    z-index: 2;
+  }
+
+  .left-col {
+    position: absolute;
+    top: 0; left: 0;
+    width: 620px;
+    height: 630px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 60px 60px 70px;
+    z-index: 2;
+  }
+
+  .brand {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: #d4a017;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+
+  .headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 1.12;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .divider {
+    width: 50px;
+    height: 4px;
+    background: #d4a017;
+    margin-bottom: 20px;
+  }
+
+  .tagline {
+    font-size: 19px;
+    color: rgba(242, 237, 228, 0.75);
+    line-height: 1.55;
+  }
+
+  .right-col {
+    position: absolute;
+    top: 0; right: 0;
+    width: 580px;
+    height: 630px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .mockup-stage {
+    perspective: 1000px;
+  }
+
+  .mockup {
+    width: 320px;
+    display: block;
+    transform: rotateY(-6deg) rotateX(2deg);
+    box-shadow:
+      0 8px 20px rgba(0,0,0,0.2),
+      0 30px 60px rgba(0,0,0,0.25),
+      0 50px 80px rgba(0,0,0,0.12);
+    border-radius: 3px;
+  }
+
+  /* Glow behind mockup */
+  .glow {
+    position: absolute;
+    top: 50%;
+    right: 200px;
+    transform: translateY(-50%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(ellipse, rgba(212,160,23,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div class="accent-bar"></div>
+  <div class="left-col">
+    <div class="brand">Caravan Solar</div>
+    <div class="headline">The Beginner's<br>Guide to<br>Caravan Solar</div>
+    <div class="divider"></div>
+    <div class="tagline">Shopping lists. Brand comparisons.<br>No jargon. No theory.</div>
+  </div>
+  <div class="glow"></div>
+  <div class="right-col">
+    <div class="mockup-stage">
+      <img class="mockup" src="cover.png" alt="Guide cover">
+    </div>
+  </div>
+</body>
+</html>
