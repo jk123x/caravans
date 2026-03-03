@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/config";
 import { GuideUpsellBlock } from "@/components/guide-upsell-block";
+import { AutoDownload } from "./auto-download";
 
 export const metadata: Metadata = {
   title: "Download Your Power Audit | Caravan Solar",
@@ -41,8 +42,9 @@ export default function FreeGuideConfirmPage() {
             Your download is ready
           </h1>
           <p className="font-body text-brand-muted text-lg leading-relaxed max-w-md mx-auto mb-8">
-            Chapter 0 covers the power audit. It's the first thing to work through before making any buying decisions.
+            Your download should start automatically. If not, use the button below.
           </p>
+          <AutoDownload url={SITE.chapter0DownloadUrl} />
           <a
             href={SITE.chapter0DownloadUrl}
             download
