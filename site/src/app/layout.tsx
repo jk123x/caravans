@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     description:
       "The $49 guide that tells you exactly what to buy for your caravan solar setup. No jargon. No theory. Just clear recommendations.",
     type: "website",
+    url: "https://www.caravansolar.au",
     images: [
       {
         url: "https://caravansolar.au/og-image.png",
