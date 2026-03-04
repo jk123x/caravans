@@ -53,6 +53,13 @@ export async function POST(request: NextRequest) {
   }
 
   const session = event.data.object;
+
+  const expectedHost = "caravansolar.au";
+  const successUrl = session.success_url || "";
+  if (!successUrl.includes(expectedHost)) {
+    return NextResponse.json({ received: true });
+  }
+
   const email: string | undefined = session.customer_details?.email;
   const name: string | undefined = session.customer_details?.name;
 
