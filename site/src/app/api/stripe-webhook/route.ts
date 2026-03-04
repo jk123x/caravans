@@ -86,6 +86,12 @@ export async function POST(request: NextRequest) {
       `${KIT_BASE}/forms/${SITE.kitFormIds.purchase}/subscribers/${subscriber.id}`,
       { method: "POST", headers: kitHeaders }
     );
+
+    await fetch(`${KIT_BASE}/subscribers/${subscriber.id}/tags`, {
+      method: "POST",
+      headers: kitHeaders,
+      body: JSON.stringify({ tag: "purchased" }),
+    });
   } catch (err) {
     console.error("Kit API error in webhook:", err);
   }
