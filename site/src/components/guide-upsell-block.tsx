@@ -7,10 +7,10 @@ function GoldDot() {
 }
 
 const benefits = [
-  "Power Audit Worksheet (calculate your exact daily usage)",
+  "Your full component list with exact specs for your tier",
   "Brand comparisons (REDARC vs Victron vs Enerdrive vs Renogy)",
-  "Ready-to-use shopping lists for your exact tier",
-  "System sizing worksheets (verify every component spec)",
+  "A ready-to-use shopping list you can take to the shop",
+  "System sizing worksheets so every component matches",
   "The 7 expensive mistakes that cost people $500\u20132,000",
 ];
 
@@ -42,6 +42,9 @@ export function GuideUpsellBlock() {
       </a>
       <p className="text-brand-muted text-xs font-body text-center mt-3">
         Instant PDF download. Prints beautifully on A4.
+      </p>
+      <p className="text-brand-muted text-xs font-body text-center mt-1.5">
+        Not useful? Full refund, no questions asked.
       </p>
     </div>
   );

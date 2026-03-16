@@ -74,37 +74,29 @@ export function QuizResultView({ result }: QuizResultViewProps) {
         </div>
       </div>
 
-      {/* System recommendation */}
+      {/* System teaser — gate the specifics */}
       <div className="bg-white rounded-md p-6">
-        <h3 className="font-display text-brand-slate text-xl mb-4">Your recommended system</h3>
-        <ul className="space-y-2.5">
-          {result.system.map((item) => (
-            <li key={item} className="flex items-start gap-2.5">
-              <GoldDot />
-              <span className="font-body text-brand-body text-[15px]">{item}</span>
-            </li>
+        <h3 className="font-display text-brand-slate text-xl mb-3">Your system needs {result.system.length} components</h3>
+        <p className="font-body text-brand-muted text-[15px] leading-relaxed mb-4">
+          We&apos;ve worked out the solar panel size, battery capacity, charge controller, and inverter specs for your setup. The guide has your full component list with specific brand recommendations and a ready-to-use shopping list.
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {["Solar panels", "Battery bank", "Charge controller", "DC-DC charger", "Inverter", "Battery monitor"].map((component) => (
+            <div key={component} className="bg-brand-cream-light rounded px-3 py-2 text-center">
+              <span className="font-body text-brand-muted text-sm">{component}</span>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
-      {/* Personalised notes */}
-      <div className="space-y-4">
-        {result.existingSetupNote && (
-          <div className="border-l-4 border-brand-gold bg-brand-cream-light rounded-r-md px-5 py-4">
-            <p className="font-body text-brand-body text-[15px] leading-relaxed">{result.existingSetupNote}</p>
-          </div>
-        )}
-        {result.concernNote && (
-          <div className="border-l-4 border-brand-gold bg-brand-cream-light rounded-r-md px-5 py-4">
-            <p className="font-body text-brand-body text-[15px] leading-relaxed">{result.concernNote}</p>
-          </div>
-        )}
-        {result.budgetNote && (
-          <div className="border-l-4 border-brand-gold bg-brand-cream-light rounded-r-md px-5 py-4">
-            <p className="font-body text-brand-body text-[15px] leading-relaxed">{result.budgetNote}</p>
-          </div>
-        )}
-      </div>
+      {/* Personalised note — consolidated, points to guide */}
+      {(result.existingSetupNote || result.concernNote) && (
+        <div className="border-l-4 border-brand-gold bg-brand-cream-light rounded-r-md px-5 py-4">
+          <p className="font-body text-brand-body text-[15px] leading-relaxed">
+            {result.existingSetupNote || result.concernNote}
+          </p>
+        </div>
+      )}
 
       {/* Guide upsell */}
       <GuideUpsellBlock />

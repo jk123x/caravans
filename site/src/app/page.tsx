@@ -213,7 +213,7 @@ export default function Home() {
                 Get the Guide — ${SITE.price}
               </a>
               <p className="text-brand-muted text-sm font-body">
-                PDF download. Prints on A4.
+                PDF download. Prints on A4. Not useful? Full refund.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-4">
@@ -444,6 +444,9 @@ export default function Home() {
             </a>
             <p className="text-white/40 text-sm font-body mt-4">
               Instant PDF download. Prints beautifully on A4.
+            </p>
+            <p className="text-white/40 text-sm font-body mt-1.5">
+              Not useful? Full refund, no questions asked.
             </p>
           </AnimatedSection>
         </div>
