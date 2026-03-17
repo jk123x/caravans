@@ -78,7 +78,7 @@ export function QuizResultView({ result }: QuizResultViewProps) {
       <div className="bg-white rounded-md p-6">
         <h3 className="font-display text-brand-slate text-xl mb-3">Your system needs {result.system.length} components</h3>
         <p className="font-body text-brand-muted text-[15px] leading-relaxed mb-4">
-          We&apos;ve worked out the solar panel size, battery capacity, charge controller, and inverter specs for your setup. The guide has your full component list with specific brand recommendations and a ready-to-use shopping list.
+          We&apos;ve worked out the solar panel size, battery capacity, charge controller, and inverter specs for your setup — sized for Australian sun hours and conditions. The guide has your full component list with specific brand recommendations and a ready-to-use shopping list.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {["Solar panels", "Battery bank", "Charge controller", "DC-DC charger", "Inverter", "Battery monitor"].map((component) => (

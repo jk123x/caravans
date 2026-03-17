@@ -35,7 +35,7 @@ export default function FreeGuidePage() {
             Your Caravan Solar Power Audit
           </h1>
           <p className="font-body text-brand-muted text-lg leading-relaxed max-w-lg mx-auto">
-            Find out how much power your caravan actually uses each day. It takes 10 minutes and it's the first thing you need to figure out before buying anything.
+            Find out how much power your caravan actually uses each day. Sized for Australian conditions. It takes 10 minutes and it&apos;s the first thing you need to figure out before buying anything.
           </p>
         </div>
 

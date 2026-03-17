@@ -82,7 +82,7 @@ const features = [
   {
     num: "03",
     title: "Brand Comparisons",
-    desc: "REDARC vs Victron vs Enerdrive vs Renogy. Side-by-side comparison with clear recommendations for different budgets and use cases.",
+    desc: "REDARC vs Victron vs Enerdrive vs Renogy. Side-by-side comparison of brands you can actually buy in Australia, with clear recommendations for different budgets.",
   },
   {
     num: "04",
@@ -187,8 +187,8 @@ export default function Home() {
               <AnimatedSection delay={0.2}>
                 <p className="font-body text-white/70 text-lg sm:text-xl leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
                   Clear recommendations, brand comparisons, and ready-to-use
-                  shopping lists. No jargon. No theory. No trying to sell you a
-                  specific brand.
+                  shopping lists for Aussie caravanners. No jargon. No
+                  theory. No trying to sell you a specific brand.
                 </p>
               </AnimatedSection>
             </div>
@@ -286,11 +286,12 @@ export default function Home() {
             {/* Gold left-bar callout */}
             <div className="border-l-4 border-brand-gold bg-white rounded-r-md px-6 py-5 text-left">
               <p className="font-body text-brand-body leading-relaxed">
-                Everyone says &ldquo;do your research.&rdquo; But the research is
-                scattered across hundreds of forum posts, YouTube videos, and brand
-                websites that are really just trying to sell you their gear. This
-                guide pulls it all together in one place, with recommendations that
-                aren&apos;t tied to any brand.
+                Everyone says &ldquo;do your research.&rdquo; But most of what
+                you&apos;ll find is American content that doesn&apos;t apply here,
+                forum posts from ten years ago, and brand websites trying to sell
+                you their gear. This guide pulls it all together for Aussie
+                conditions, with recommendations that aren&apos;t tied to any
+                brand.
               </p>
             </div>
           </AnimatedSection>
